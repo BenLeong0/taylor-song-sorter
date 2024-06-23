@@ -1,0 +1,48 @@
+<div class="wrapper">
+  <div class="content">
+    <h1>Taylor Swift Song Sorter</h1>
+    @if (pageState(); as state) {
+      @if (state.finished) {
+        <h3>Done! See your results below :)</h3>
+        <app-menu (undo)="undo()" (restart)="confirmRestart()" />
+        <table>
+          <tr class="row-header">
+            <td>Rank</td>
+            <td>Title</td>
+          </tr>
+          @for (song of state.songs; track song.title) {
+            <tr>
+              <td class="col-rank">{{ song.rank }}</td>
+              <td>{{ song.title }}</td>
+            </tr>
+          }
+        </table>
+        <app-menu (undo)="undo()" (restart)="confirmRestart()" />
+      } @else {
+        <h3>Decision #{{ history().length + 1 }}</h3>
+        <div class="options">
+          <div class="option option-main" (click)="selectOption('left')">
+            <p class="song-title">{{ state.options[0].title }}</p>
+            <p class="album">{{ state.options[0].album }}</p>
+          </div>
+          <div class="ties-container">
+            <div class="option option-tie" (click)="selectOption('tie')">
+              I like both
+            </div>
+            <div class="option option-tie" (click)="selectOption('tie')">
+              No opinion
+            </div>
+          </div>
+          <div class="option option-main" (click)="selectOption('right')">
+            <p class="song-title">{{ state.options[1].title }}</p>
+            <p class="album">{{ state.options[1].album }}</p>
+          </div>
+        </div>
+        <app-menu (undo)="undo()" (restart)="confirmRestart()" />
+        <div class="menu-option" (click)="fillHistory()">
+          generate fake ranking
+        </div>
+      }
+    }
+  </div>
+</div>
