@@ -6,13 +6,14 @@ import { Component, EventEmitter, Output } from "@angular/core";
   standalone: true,
   imports: [CommonModule],
   template: `
+    <div class="menu-title">ranking order</div>
     <div class="menu-options">
       <div
         class="menu-option"
         style="text-align: right"
         (click)="byAlbum.emit()"
       >
-        by album
+        album by album
       </div>
       <div>|</div>
       <div
@@ -20,7 +21,7 @@ import { Component, EventEmitter, Output } from "@angular/core";
         style="text-align: left"
         (click)="randomise.emit()"
       >
-        random order
+        randomised order
       </div>
     </div>
   `,
