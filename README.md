@@ -4,7 +4,8 @@ Access here: https://benleong0.github.io/taylor-song-sorter/
 
 ## To-do
 
-- [ ] Update favicon and tab title
+- [x] Update favicon and tab title
+- [ ] Note about not overusing ties
 - [ ] Spotify preview
 - [ ] Progress %
   - Especially hard to do when going album-by-album - maybe just add for random order
