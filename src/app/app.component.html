@@ -23,6 +23,10 @@
           (restart)="confirmRestart()"
         />
       } @else {
+        <div class="intro-text">
+          dear reader: try to avoid using the middle options, as overuse will
+          lower the quality of the results
+        </div>
         <h3>Decision #{{ history().length + 1 }}</h3>
         <div class="options">
           <div
@@ -35,10 +39,10 @@
           </div>
           <div class="ties-container">
             <div class="option option-tie" (click)="selectOption('tie')">
-              <p>I like both</p>
+              <p>tie</p>
             </div>
             <div class="option option-tie" (click)="selectOption('tie')">
-              <p>No opinion</p>
+              <p>no opinion</p>
             </div>
           </div>
           <div
