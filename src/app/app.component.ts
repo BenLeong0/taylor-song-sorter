@@ -270,6 +270,7 @@ export class AppComponent {
 
   @HostListener("window:keydown", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {
+    if (this.pageState().finished) return;
     switch (event.key) {
       case "ArrowLeft":
         this.selectOption("left");
