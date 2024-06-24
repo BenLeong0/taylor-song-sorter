@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "song-sorter": {
+    "taylor-song-sorter": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/song-sorter",
+            "outputPath": "dist/taylor-song-sorter",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -50,10 +50,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "song-sorter:build:production"
+              "buildTarget": "taylor-song-sorter:build:production"
             },
             "development": {
-              "buildTarget": "song-sorter:build:development"
+              "buildTarget": "taylor-song-sorter:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -61,7 +61,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "song-sorter:build"
+            "buildTarget": "taylor-song-sorter:build"
           }
         },
         "test": {
