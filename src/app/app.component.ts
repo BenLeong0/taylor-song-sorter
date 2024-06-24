@@ -10,8 +10,7 @@ import {
 import { Menu } from "$lib/components/menu.component";
 import { Settings } from "$lib/components/settings.component";
 import { ALBUMS, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
-
-type Selection = "left" | "right" | "tie";
+import { chooseRandom, shuffleArr } from "$lib/utils";
 
 class UnfinishedException extends Error {
   v1: SongEntry[];
@@ -25,21 +24,6 @@ class UnfinishedException extends Error {
   }
 }
 
-type MergeArgs = {
-  arr: SongEntry[][];
-  his: Selection[];
-  l: number;
-  r: number;
-  m: number;
-};
-
-type MergesortArgs = {
-  arr: SongEntry[][];
-  his: Selection[];
-  farL?: number;
-  farR?: number;
-};
-
 type SongResult = {
   title: string;
   album: string;
@@ -48,7 +32,7 @@ type SongResult = {
 type SongOptions = [SongEntry, SongEntry];
 
 type SortType = "random" | "byAlbum";
-
+type Selection = "left" | "right" | "tie";
 type PageStateFinished = { finished: true; songs: SongResult[] };
 type PageStateUnfinished = { finished: false; options: SongOptions };
 type PageState = PageStateFinished | PageStateUnfinished;
@@ -82,37 +66,39 @@ export class AppComponent {
 
   public readonly pageState = computed<PageState>(() => {
     try {
-      const sortType = this.sortType();
-      const res = sortType === "random" ? this.randomSort() : this.albumSort();
-
-      const songs: SongResult[] = res
-        .slice(res.findIndex((x) => x.length > 0))
-        .map((songRes, i) =>
-          songRes
-            .map((song) => ({ ...song, rank: i + 1 }))
-            .sort((s1, s2) => (s1.title < s2.title ? -1 : 1))
-        )
-        .flat();
-
+      const songs = this.sortSongs();
       return { finished: true, songs };
     } catch (e) {
       if (!(e instanceof UnfinishedException)) throw e;
-      const options: SongOptions = [
-        this.chooseRandom(e.v1),
-        this.chooseRandom(e.v2),
-      ];
+
+      const options: SongOptions = [chooseRandom(e.v1), chooseRandom(e.v2)];
       return { finished: false, options };
     }
   });
 
-  public toggleSortType() {
-    const newValue = this.sortType() == "random" ? "byAlbum" : "random";
-    this.sortType.set(newValue);
-  }
+  /* Buttons */
 
   public selectOption(option: Selection): void {
     this.restartRequested.set(false);
     this.history.update((x) => [...x, option]);
+  }
+
+  public selectSortType(sortType: SortType): void {
+    switch (sortType) {
+      case "byAlbum":
+        this.sortType.set("byAlbum");
+        break;
+      case "random":
+        this.sortType.set("random");
+        this.randomiseSeed();
+        break;
+    }
+  }
+
+  public undo(): void {
+    if (this.history().length == 0) return;
+    this.restartRequested.set(false);
+    this.history.update((his) => his.slice(0, -1));
   }
 
   public requestRestart(): void {
@@ -125,15 +111,74 @@ export class AppComponent {
     this.randomiseSeed();
   }
 
-  public undo(): void {
-    if (this.history().length == 0) return;
-    this.restartRequested.set(false);
-    this.history.update((his) => his.slice(0, -1));
+  private randomiseSeed(): void {
+    this.seed.set(Math.random() * 100000);
   }
 
-  private mergesort({ arr, his, farL, farR }: MergesortArgs) {
-    const start = farL ?? 0;
-    const end = farR ?? arr.length;
+  /* Sorting */
+
+  private sortSongs(): SongResult[] {
+    const sortType = this.sortType();
+    const res = sortType === "random" ? this.randomSort() : this.albumSort();
+
+    const songs: SongResult[] = res
+      .slice(res.findIndex((x) => x.length > 0))
+      .map((songRes, i) =>
+        songRes
+          .map((song) => ({ ...song, rank: i + 1 }))
+          .sort((s1, s2) => (s1.title < s2.title ? -1 : 1))
+      )
+      .flat();
+
+    return songs;
+  }
+
+  private randomSort() {
+    const arr = shuffleArr(SONGS, this.seed()).map((x) => [x]);
+    const his = [...this.history()];
+    return this.mergesort({ arr, his });
+  }
+
+  private albumSort() {
+    const albumBounds = ALBUMS.map<[number, number]>((album) => [
+      SONGS.findIndex((song) => song.album === album),
+      SONGS.findLastIndex((song) => song.album === album) + 1,
+    ]).sort((x) => x[0]);
+
+    const arr = SONGS.map((x) => [x]);
+    const his = [...this.history()];
+    for (let i = 0; i < albumBounds.length; i++) {
+      const start = albumBounds[i][0];
+      const end = albumBounds[i][1];
+      this.mergesort({ arr, his, start, end });
+    }
+
+    for (let n = 0; n < Math.log2(ALBUMS.length); n++) {
+      for (let lInd = 0; lInd < ALBUMS.length; lInd += 2 ** (n + 1)) {
+        const l = albumBounds[lInd][0];
+
+        const mInd = lInd + 2 ** n;
+        if (mInd >= ALBUMS.length) continue;
+        const m = albumBounds[mInd][0];
+
+        const rInd = Math.min(mInd + 2 ** n, ALBUMS.length - 1);
+        const r = albumBounds[rInd][1];
+
+        this.merge({ arr, his, l, m, r });
+      }
+    }
+
+    return arr;
+  }
+
+  private mergesort(args: {
+    arr: SongEntry[][];
+    his: Selection[];
+    start?: number;
+    end?: number;
+  }) {
+    const { arr, his, start = 0, end = arr.length } = args;
+
     for (let n = 0; n < Math.log2(end); n++) {
       for (let l = start; l < end; l += 2 ** (n + 1)) {
         const m = l + 2 ** n;
@@ -145,8 +190,16 @@ export class AppComponent {
     return arr;
   }
 
-  private merge({ arr, his, l, m, r }: MergeArgs) {
+  private merge(args: {
+    arr: SongEntry[][];
+    his: Selection[];
+    l: number;
+    r: number;
+    m: number;
+  }) {
+    const { arr, his, l, m, r } = args;
     if (m >= r) return;
+
     let [p1, p2] = [l, m];
     const newArr: SongEntry[][] = [];
     while (p1 < m && p2 < r) {
@@ -187,69 +240,13 @@ export class AppComponent {
     });
   }
 
-  private randomSort() {
-    const arr = this.shuffleArr(SONGS, this.seed()).map((x) => [x]);
-    const his = [...this.history()];
-    return this.mergesort({ arr, his });
-  }
-
-  private albumSort() {
-    const albumBounds = ALBUMS.map<[number, number]>((album) => [
-      SONGS.findIndex((song) => song.album === album),
-      SONGS.findLastIndex((song) => song.album === album) + 1,
-    ]).sort((x) => x[0]);
-
-    const arr = SONGS.map((x) => [x]);
-    const his = [...this.history()];
-    for (let i = 0; i < albumBounds.length; i++) {
-      const farL = albumBounds[i][0];
-      const farR = albumBounds[i][1];
-      this.mergesort({ arr, his, farL, farR });
-    }
-
-    for (let n = 0; n < Math.log2(ALBUMS.length); n++) {
-      for (let lInd = 0; lInd < ALBUMS.length; lInd += 2 ** (n + 1)) {
-        const l = albumBounds[lInd][0];
-
-        const mInd = lInd + 2 ** n;
-        if (mInd >= ALBUMS.length) continue;
-        const m = albumBounds[mInd][0];
-
-        const rInd = Math.min(mInd + 2 ** n, ALBUMS.length - 1);
-        const r = albumBounds[rInd][1];
-
-        this.merge({ arr, his, l, m, r });
-      }
-    }
-
-    return arr;
-  }
-
-  // MOVE TO UTILS
-  private chooseRandom<T>(arr: T[]): T {
-    const ind = Math.floor(Math.random() * arr.length);
-    return arr[ind];
-  }
-
-  // MOVE TO UTILS
-  private shuffleArr<T>(arr: T[], seed: number): T[] {
-    return arr
-      .map((value, i) => ({ value, sort: (Math.sin(i) * seed) % 1 }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value);
-  }
-
-  public fillHistory(): void {
-    this.history.set(this.history().concat(new Array(1028).fill("left")));
-  }
-
-  public randomiseSeed(): void {
-    this.seed.set(Math.random() * 100000);
-  }
+  /* Styling */
 
   public getOptionStyle(song: SongEntry): string {
     return `background-color: ${COLOURS[song.album]}40`;
   }
+
+  /* Local storage */
 
   private saveToLocalStorage() {
     localStorage.setItem("history", JSON.stringify(this.history()));
@@ -267,6 +264,8 @@ export class AppComponent {
     this.seed.set(parseFloat(seed));
     this.sortType.set(sortType as SortType);
   }
+
+  /* Hotkeys */
 
   @HostListener("window:keydown", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -286,5 +285,11 @@ export class AppComponent {
         this.undo();
         break;
     }
+  }
+
+  /* Local development */
+
+  public fillHistory(): void {
+    this.history.set(this.history().concat(new Array(1028).fill("left")));
   }
 }
