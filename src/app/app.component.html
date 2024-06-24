@@ -39,6 +39,15 @@
           </div>
         </div>
         <app-menu (undo)="undo()" (restart)="confirmRestart()" />
+        <label class="switch">
+          <!-- FIX THIS -->
+          <input
+            type="checkbox"
+            [value]="sortType() === 'byAlbum'"
+            (click)="toggleSortType()"
+          />
+          <span class="slider"></span>
+        </label>
         <div class="menu-option" (click)="fillHistory()">
           generate fake ranking
         </div>
