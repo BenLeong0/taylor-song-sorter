@@ -1,7 +1,10 @@
-# SongSorter
+# Taylor Swift Song Sorter
+
+Access here https://benleong0.github.io/taylor-song-sorter/
 
 ## To-do
 
+- [ ] Update favicon and tab title
 - [ ] Spotify preview
 - [ ] Progress %
   - Especially hard to do when going album-by-album
