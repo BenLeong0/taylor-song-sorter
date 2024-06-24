@@ -62,8 +62,8 @@
         />
         <app-settings
           *ngIf="!started()"
-          (byAlbum)="sortType.set('byAlbum')"
-          (randomise)="sortType.set('random'); randomiseSeed()"
+          (byAlbum)="selectSortType('byAlbum')"
+          (randomise)="selectSortType('random')"
         />
         <div
           *ngIf="SHOW_RANDOM_RANKING_OPTION"

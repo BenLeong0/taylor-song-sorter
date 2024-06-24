@@ -83,34 +83,39 @@ export class AppComponent {
 
   public readonly pageState = computed<PageState>(() => {
     try {
-      const sortType = this.sortType();
-      const res = sortType === "random" ? this.randomSort() : this.albumSort();
-
-      const songs: SongResult[] = res
-        .slice(res.findIndex((x) => x.length > 0))
-        .map((songRes, i) =>
-          songRes
-            .map((song) => ({ ...song, rank: i + 1 }))
-            .sort((s1, s2) => (s1.title < s2.title ? -1 : 1))
-        )
-        .flat();
-
+      const songs = this.sortSongs();
       return { finished: true, songs };
     } catch (e) {
       if (!(e instanceof UnfinishedException)) throw e;
+
       const options: SongOptions = [chooseRandom(e.v1), chooseRandom(e.v2)];
       return { finished: false, options };
     }
   });
 
-  public toggleSortType() {
-    const newValue = this.sortType() == "random" ? "byAlbum" : "random";
-    this.sortType.set(newValue);
-  }
+  /* Buttons */
 
   public selectOption(option: Selection): void {
     this.restartRequested.set(false);
     this.history.update((x) => [...x, option]);
+  }
+
+  public selectSortType(sortType: SortType): void {
+    switch (sortType) {
+      case "byAlbum":
+        this.sortType.set("byAlbum");
+        break;
+      case "random":
+        this.sortType.set("random");
+        this.randomiseSeed();
+        break;
+    }
+  }
+
+  public undo(): void {
+    if (this.history().length == 0) return;
+    this.restartRequested.set(false);
+    this.history.update((his) => his.slice(0, -1));
   }
 
   public requestRestart(): void {
@@ -123,10 +128,64 @@ export class AppComponent {
     this.randomiseSeed();
   }
 
-  public undo(): void {
-    if (this.history().length == 0) return;
-    this.restartRequested.set(false);
-    this.history.update((his) => his.slice(0, -1));
+  private randomiseSeed(): void {
+    this.seed.set(Math.random() * 100000);
+  }
+
+  /* Sorting */
+
+  private sortSongs(): SongResult[] {
+    const sortType = this.sortType();
+    const res = sortType === "random" ? this.randomSort() : this.albumSort();
+
+    const songs: SongResult[] = res
+      .slice(res.findIndex((x) => x.length > 0))
+      .map((songRes, i) =>
+        songRes
+          .map((song) => ({ ...song, rank: i + 1 }))
+          .sort((s1, s2) => (s1.title < s2.title ? -1 : 1))
+      )
+      .flat();
+
+    return songs;
+  }
+
+  private randomSort() {
+    const arr = shuffleArr(SONGS, this.seed()).map((x) => [x]);
+    const his = [...this.history()];
+    return this.mergesort({ arr, his });
+  }
+
+  private albumSort() {
+    const albumBounds = ALBUMS.map<[number, number]>((album) => [
+      SONGS.findIndex((song) => song.album === album),
+      SONGS.findLastIndex((song) => song.album === album) + 1,
+    ]).sort((x) => x[0]);
+
+    const arr = SONGS.map((x) => [x]);
+    const his = [...this.history()];
+    for (let i = 0; i < albumBounds.length; i++) {
+      const farL = albumBounds[i][0];
+      const farR = albumBounds[i][1];
+      this.mergesort({ arr, his, farL, farR });
+    }
+
+    for (let n = 0; n < Math.log2(ALBUMS.length); n++) {
+      for (let lInd = 0; lInd < ALBUMS.length; lInd += 2 ** (n + 1)) {
+        const l = albumBounds[lInd][0];
+
+        const mInd = lInd + 2 ** n;
+        if (mInd >= ALBUMS.length) continue;
+        const m = albumBounds[mInd][0];
+
+        const rInd = Math.min(mInd + 2 ** n, ALBUMS.length - 1);
+        const r = albumBounds[rInd][1];
+
+        this.merge({ arr, his, l, m, r });
+      }
+    }
+
+    return arr;
   }
 
   private mergesort({ arr, his, farL, farR }: MergesortArgs) {
@@ -185,51 +244,7 @@ export class AppComponent {
     });
   }
 
-  private randomSort() {
-    const arr = shuffleArr(SONGS, this.seed()).map((x) => [x]);
-    const his = [...this.history()];
-    return this.mergesort({ arr, his });
-  }
-
-  private albumSort() {
-    const albumBounds = ALBUMS.map<[number, number]>((album) => [
-      SONGS.findIndex((song) => song.album === album),
-      SONGS.findLastIndex((song) => song.album === album) + 1,
-    ]).sort((x) => x[0]);
-
-    const arr = SONGS.map((x) => [x]);
-    const his = [...this.history()];
-    for (let i = 0; i < albumBounds.length; i++) {
-      const farL = albumBounds[i][0];
-      const farR = albumBounds[i][1];
-      this.mergesort({ arr, his, farL, farR });
-    }
-
-    for (let n = 0; n < Math.log2(ALBUMS.length); n++) {
-      for (let lInd = 0; lInd < ALBUMS.length; lInd += 2 ** (n + 1)) {
-        const l = albumBounds[lInd][0];
-
-        const mInd = lInd + 2 ** n;
-        if (mInd >= ALBUMS.length) continue;
-        const m = albumBounds[mInd][0];
-
-        const rInd = Math.min(mInd + 2 ** n, ALBUMS.length - 1);
-        const r = albumBounds[rInd][1];
-
-        this.merge({ arr, his, l, m, r });
-      }
-    }
-
-    return arr;
-  }
-
-  public fillHistory(): void {
-    this.history.set(this.history().concat(new Array(1028).fill("left")));
-  }
-
-  public randomiseSeed(): void {
-    this.seed.set(Math.random() * 100000);
-  }
+  /* Styling */
 
   public getOptionStyle(song: SongEntry): string {
     return `background-color: ${COLOURS[song.album]}40`;
@@ -274,5 +289,11 @@ export class AppComponent {
         this.undo();
         break;
     }
+  }
+
+  /* Local development */
+
+  public fillHistory(): void {
+    this.history.set(this.history().concat(new Array(1028).fill("left")));
   }
 }
