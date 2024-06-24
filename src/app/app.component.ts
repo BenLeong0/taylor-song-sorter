@@ -61,7 +61,7 @@ type PageState = PageStateFinished | PageStateUnfinished;
   templateUrl: "./app.component.html",
 })
 export class AppComponent {
-  protected readonly SHOW_RANDOM_RANKING_OPTION = true;
+  protected readonly SHOW_RANDOM_RANKING_OPTION = false;
 
   protected readonly COLOURS = COLOURS;
 
