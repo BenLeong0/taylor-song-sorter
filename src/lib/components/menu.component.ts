@@ -1,5 +1,12 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Output, signal } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Output,
+  ModelSignal,
+  signal,
+  model,
+} from "@angular/core";
 
 @Component({
   selector: "app-menu",
@@ -34,7 +41,8 @@ import { Component, EventEmitter, Output, signal } from "@angular/core";
 export class Menu {
   @Output() public undo = new EventEmitter<void>();
   @Output() public restart = new EventEmitter<void>();
-  protected readonly restartRequested = signal(false);
+
+  public readonly restartRequested = model<boolean>();
 
   public requestRestart(): void {
     this.restartRequested.set(true);

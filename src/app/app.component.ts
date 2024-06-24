@@ -71,7 +71,6 @@ export class AppComponent {
   protected readonly sortType = signal<SortType>("byAlbum");
 
   protected readonly started = computed<boolean>(() => {
-    console.log(this.history());
     return this.history().length > 0;
   });
 
@@ -112,6 +111,7 @@ export class AppComponent {
   }
 
   public selectOption(option: Selection): void {
+    this.restartRequested.set(false);
     this.history.update((x) => [...x, option]);
   }
 
@@ -127,6 +127,7 @@ export class AppComponent {
 
   public undo(): void {
     if (this.history().length == 0) return;
+    this.restartRequested.set(false);
     this.history.update((his) => his.slice(0, -1));
   }
 
