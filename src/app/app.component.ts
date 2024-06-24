@@ -87,8 +87,14 @@ export class AppComponent {
       const res = sortType === "random" ? this.randomSort() : this.albumSort();
 
       const songs: SongResult[] = res
-        .map((songRes, i) => songRes.map((song) => ({ ...song, rank: i + 1 })))
+        .slice(res.findIndex((x) => x.length > 0))
+        .map((songRes, i) =>
+          songRes
+            .map((song) => ({ ...song, rank: i + 1 }))
+            .sort((s1, s2) => (s1.title < s2.title ? -1 : 1))
+        )
         .flat();
+
       return { finished: true, songs };
     } catch (e) {
       if (!(e instanceof UnfinishedException)) throw e;
