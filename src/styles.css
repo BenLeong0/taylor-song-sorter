@@ -1,1 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
+.menu-options {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.menu-option {
+  width: 100px;
+  cursor: pointer;
+  user-select: none;
+}

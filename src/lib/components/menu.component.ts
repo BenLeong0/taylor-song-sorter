@@ -1,23 +1,30 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output, signal } from '@angular/core';
-
+import { CommonModule } from "@angular/common";
+import { Component, EventEmitter, Output, signal } from "@angular/core";
 
 @Component({
-  selector: 'app-menu',
+  selector: "app-menu",
   standalone: true,
   imports: [CommonModule],
-  styleUrl: '../../app.component.css',
   template: `
     <div class="menu-options">
-      <div class="menu-option" style="text-align: right" (click)="undo.emit()">undo previous</div>
-      <div> | </div>
+      <div class="menu-option" style="text-align: right" (click)="undo.emit()">
+        undo previous
+      </div>
+      <div>|</div>
       @if (restartRequested()) {
-        <div class="menu-option" style="font-weight: bold" (click)="confirmRestart()">
+        <div
+          class="menu-option"
+          style="font-weight: bold"
+          (click)="confirmRestart()"
+        >
           are you sure?
         </div>
-      }
-      @else {
-        <div class="menu-option" style="text-align: left" (click)="requestRestart()">
+      } @else {
+        <div
+          class="menu-option"
+          style="text-align: left"
+          (click)="requestRestart()"
+        >
           restart ranking
         </div>
       }
@@ -38,4 +45,3 @@ export class Menu {
     this.restart.emit();
   }
 }
-
