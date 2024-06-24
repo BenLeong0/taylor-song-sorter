@@ -6,10 +6,9 @@ import {
   effect,
   signal,
 } from "@angular/core";
-import { bootstrapApplication } from "@angular/platform-browser";
 
 import { Menu } from "./lib/components/menu.component";
-import { SONGS, type SongEntry } from "./lib/data/songs";
+import { ALBUMS, SONGS, type SongEntry } from "./lib/data/songs";
 
 type Selection = "left" | "right" | "tie";
 
@@ -36,8 +35,8 @@ type MergeArgs = {
 type MergesortArgs = {
   arr: SongEntry[][];
   his: Selection[];
-  l: number;
-  r: number;
+  farL?: number;
+  farR?: number;
 };
 
 type SongResult = {
@@ -45,9 +44,12 @@ type SongResult = {
   album: string;
   rank: number;
 };
+type SongOptions = [SongEntry, SongEntry];
+
+type SortType = "random" | "byAlbum";
 
 type PageStateFinished = { finished: true; songs: SongResult[] };
-type PageStateUnfinished = { finished: false; options: [SongEntry, SongEntry] };
+type PageStateUnfinished = { finished: false; options: SongOptions };
 type PageState = PageStateFinished | PageStateUnfinished;
 
 @Component({
@@ -61,34 +63,189 @@ export class AppComponent {
   protected readonly history = signal<Selection[]>([]);
   protected readonly restartRequested = signal(false);
   protected readonly seed = signal(1);
-  private readonly songs = computed(() =>
-    SONGS.map((value, i) => ({ value, sort: (Math.sin(i) * this.seed()) % 1 }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value)
-  );
+  protected readonly sortType = signal<SortType>("byAlbum");
 
   public constructor() {
-    const savedHistory = localStorage.getItem("history");
-    const seed = localStorage.getItem("seed");
-    if (savedHistory && seed) {
-      this.history.set(JSON.parse(savedHistory));
-      this.seed.set(parseFloat(seed));
-    } else {
-      this.shuffleCards();
+    this.randomiseSeed();
+    this.loadFromLocalStorage();
+    effect(() => this.saveToLocalStorage());
+  }
+
+  public readonly pageState = computed<PageState>(() => {
+    try {
+      const sortType = this.sortType();
+      const res = sortType === "random" ? this.randomSort() : this.albumSort();
+
+      const songs: SongResult[] = res
+        .map((songRes, i) => songRes.map((song) => ({ ...song, rank: i + 1 })))
+        .flat();
+      return { finished: true, songs };
+    } catch (e) {
+      if (!(e instanceof UnfinishedException)) throw e;
+      const options: SongOptions = [
+        this.chooseRandom(e.v1),
+        this.chooseRandom(e.v2),
+      ];
+      return { finished: false, options };
+    }
+  });
+
+  public toggleSortType() {
+    switch (this.sortType()) {
+      case "byAlbum":
+        this.sortType.set("random");
+        break;
+      case "random":
+        this.sortType.set("byAlbum");
+        break;
+    }
+  }
+
+  public selectOption(option: Selection): void {
+    this.history.update((x) => [...x, option]);
+  }
+
+  public requestRestart(): void {
+    this.restartRequested.set(true);
+  }
+
+  public confirmRestart(): void {
+    this.restartRequested.set(false);
+    this.history.set([]);
+    this.randomiseSeed();
+  }
+
+  public undo(): void {
+    if (this.history().length == 0) return;
+    this.history.update((his) => his.slice(0, -1));
+  }
+
+  private mergesort({ arr, his, farL, farR }: MergesortArgs) {
+    const start = farL ?? 0;
+    const end = farR ?? arr.length;
+    for (let n = 0; n < Math.log2(end); n++) {
+      for (let l = start; l < end; l += 2 ** (n + 1)) {
+        const m = l + 2 ** n;
+        const r = Math.min(m + 2 ** n, end);
+        this.merge({ arr, his, l, m, r });
+      }
     }
 
-    effect(() => {
-      localStorage.setItem("history", JSON.stringify(this.history()));
-      localStorage.setItem("seed", this.seed().toString());
+    return arr;
+  }
+
+  private merge({ arr, his, l, m, r }: MergeArgs) {
+    if (m >= arr.length) return;
+    let [p1, p2] = [l, m];
+    const newArr: SongEntry[][] = [];
+    while (p1 < m && p2 < r) {
+      const [v1, v2] = [arr[p1], arr[p2]];
+      if (v1.length == 0) {
+        p1++;
+        newArr.push([]);
+        continue;
+      }
+      if (v2.length == 0) {
+        p2++;
+        newArr.push([]);
+        continue;
+      }
+
+      if (his.length == 0) {
+        throw new UnfinishedException("not finished!", v1, v2);
+      }
+
+      const ans = his.shift();
+      if (ans == "left") {
+        newArr.push(v1);
+        p1++;
+      } else if (ans == "right") {
+        newArr.push(v2);
+        p2++;
+      } else if (ans == "tie") {
+        newArr.push([...v1, ...v2], []);
+        p1++;
+        p2++;
+      }
+    }
+
+    newArr.push(...arr.slice(p1, m));
+    newArr.push(...arr.slice(p2, r));
+    newArr.forEach((val, ind) => {
+      arr[l + ind] = val;
     });
   }
 
-  private shuffleCards(): void {
+  private randomSort() {
+    const arr = this.shuffleArr(SONGS, this.seed()).map((x) => [x]);
+    const his = [...this.history()];
+    return this.mergesort({ arr, his });
+  }
+
+  private albumSort() {
+    const albumBounds = ALBUMS.map<[number, number]>((album) => [
+      SONGS.findIndex((song) => song.album === album),
+      SONGS.findLastIndex((song) => song.album === album) + 1,
+    ]).sort((x) => x[0]);
+
+    const arr = SONGS.map((x) => [x]);
+    const his = [...this.history()];
+    for (let i = 0; i < albumBounds.length; i++) {
+      const farL = albumBounds[i][0];
+      const farR = albumBounds[i][1];
+      this.mergesort({ arr, his, farL, farR });
+    }
+
+    for (let n = 0; n < Math.log2(ALBUMS.length); n++) {
+      for (let lInd = 0; lInd < ALBUMS.length; lInd += 2 ** (n + 1)) {
+        const l = albumBounds[lInd][0];
+        const m = albumBounds[lInd + 2 ** n][0];
+        const r =
+          albumBounds[Math.min(lInd + 2 ** (n + 1), ALBUMS.length - 1)][1];
+        this.merge({ arr, his, l, m, r });
+      }
+    }
+
+    return arr;
+  }
+
+  // MOVE TO UTILS
+  private chooseRandom<T>(arr: T[]): T {
+    const ind = Math.floor(Math.random() * arr.length);
+    return arr[ind];
+  }
+
+  // MOVE TO UTILS
+  private shuffleArr<T>(arr: T[], seed: number): T[] {
+    return arr
+      .map((value, i) => ({ value, sort: (Math.sin(i) * seed) % 1 }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
+  }
+
+  public fillHistory(): void {
+    this.history.set(this.history().concat(new Array(1024).fill("left")));
+  }
+
+  private randomiseSeed(): void {
     this.seed.set(Math.random() * 100000);
   }
 
-  private arrangeCards(): void {
-    this.seed.set(1);
+  private saveToLocalStorage() {
+    localStorage.setItem("history", JSON.stringify(this.history()));
+    localStorage.setItem("seed", this.seed().toString());
+    localStorage.setItem("sortType", this.sortType().toString());
+  }
+
+  private loadFromLocalStorage() {
+    const savedHistory = localStorage.getItem("history");
+    const seed = localStorage.getItem("seed");
+    const sortType = localStorage.getItem("sortType");
+
+    if (!savedHistory || !seed || !sortType) return;
+    this.history.set(JSON.parse(savedHistory));
+    this.seed.set(parseFloat(seed));
+    this.sortType.set(sortType as SortType);
   }
 
   @HostListener("window:keydown", ["$event"])
@@ -108,115 +265,5 @@ export class AppComponent {
         this.undo();
         break;
     }
-  }
-
-  public pageState = computed<PageState>(() => {
-    try {
-      const arr = this.songs().map((x) => [x]);
-      const his = [...this.history()];
-      const res = this.mergesort({ arr, his, l: 0, r: arr.length - 1 });
-
-      const songsResults = res.map<SongResult[]>((songRes, i) =>
-        songRes.map((song) => ({ ...song, rank: i + 1 }))
-      );
-      const songs = songsResults.flat();
-      return { finished: true, songs };
-    } catch (e) {
-      if (!(e instanceof UnfinishedException)) throw e;
-      const options: [SongEntry, SongEntry] = [
-        this.chooseRandom(e.v1),
-        this.chooseRandom(e.v2),
-      ];
-      return { finished: false, options };
-    }
-  });
-
-  public selectOption(option: Selection): void {
-    this.history.update((x) => [...x, option]);
-  }
-
-  public requestRestart(): void {
-    this.restartRequested.set(true);
-  }
-
-  public confirmRestart(): void {
-    this.restartRequested.set(false);
-    this.history.set([]);
-    this.shuffleCards();
-  }
-
-  public undo(): void {
-    if (this.history().length == 0) return;
-    this.history.update((his) => his.slice(0, -1));
-  }
-
-  private chooseRandom<T>(arr: T[]): T {
-    const ind = Math.floor(Math.random() * arr.length);
-    return arr[ind];
-  }
-
-  private merge({ arr, his, l, r, m }: MergeArgs): void {
-    const newArr: SongEntry[][] = [];
-    let [p1, p2] = [l, m + 1];
-
-    while (p1 <= m && p2 <= r) {
-      const v1 = arr[p1];
-      if (v1.length == 0) {
-        p1++;
-        newArr.push([]);
-        continue;
-      }
-      const v2 = arr[p2];
-      if (v2.length == 0) {
-        p2++;
-        newArr.push([]);
-        continue;
-      }
-
-      if (his.length == 0) {
-        throw new UnfinishedException("not finished!", v1, v2);
-      }
-
-      const ans = his.shift();
-      if (ans == "left") {
-        newArr.push(v1);
-        p1++;
-      } else if (ans == "right") {
-        newArr.push(v2);
-        p2++;
-      } else if (ans == "tie") {
-        newArr.push([...v1, ...v2]);
-        newArr.push([]);
-        p1++;
-        p2++;
-      }
-    }
-
-    while (p1 <= m) {
-      newArr.push(arr[p1]);
-      p1++;
-    }
-    while (p2 <= r) {
-      newArr.push(arr[p2]);
-      p2++;
-    }
-
-    newArr.forEach((val, ind) => {
-      arr[l + ind] = val;
-    });
-  }
-
-  private mergesort({ arr, his, l, r }: MergesortArgs): SongEntry[][] {
-    if (l >= r) return [arr[l], arr[r]];
-
-    const m = Math.floor((l + r) / 2);
-    this.mergesort({ arr, his, l, r: m });
-    this.mergesort({ arr, his, r, l: m + 1 });
-    this.merge({ arr, his, l, r, m });
-    return arr;
-  }
-
-  public fillHistory(): void {
-    this.history.set(this.history().concat(new Array(1024).fill("left")));
   }
 }
