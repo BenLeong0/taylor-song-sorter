@@ -10,6 +10,7 @@ import {
 import { Menu } from "$lib/components/menu.component";
 import { Settings } from "$lib/components/settings.component";
 import { ALBUMS, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
+import { chooseRandom, shuffleArr } from "$lib/utils";
 
 type Selection = "left" | "right" | "tie";
 
@@ -97,10 +98,7 @@ export class AppComponent {
       return { finished: true, songs };
     } catch (e) {
       if (!(e instanceof UnfinishedException)) throw e;
-      const options: SongOptions = [
-        this.chooseRandom(e.v1),
-        this.chooseRandom(e.v2),
-      ];
+      const options: SongOptions = [chooseRandom(e.v1), chooseRandom(e.v2)];
       return { finished: false, options };
     }
   });
@@ -188,7 +186,7 @@ export class AppComponent {
   }
 
   private randomSort() {
-    const arr = this.shuffleArr(SONGS, this.seed()).map((x) => [x]);
+    const arr = shuffleArr(SONGS, this.seed()).map((x) => [x]);
     const his = [...this.history()];
     return this.mergesort({ arr, his });
   }
@@ -225,20 +223,6 @@ export class AppComponent {
     return arr;
   }
 
-  // MOVE TO UTILS
-  private chooseRandom<T>(arr: T[]): T {
-    const ind = Math.floor(Math.random() * arr.length);
-    return arr[ind];
-  }
-
-  // MOVE TO UTILS
-  private shuffleArr<T>(arr: T[], seed: number): T[] {
-    return arr
-      .map((value, i) => ({ value, sort: (Math.sin(i) * seed) % 1 }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value);
-  }
-
   public fillHistory(): void {
     this.history.set(this.history().concat(new Array(1028).fill("left")));
   }
@@ -250,6 +234,8 @@ export class AppComponent {
   public getOptionStyle(song: SongEntry): string {
     return `background-color: ${COLOURS[song.album]}40`;
   }
+
+  /* Local storage */
 
   private saveToLocalStorage() {
     localStorage.setItem("history", JSON.stringify(this.history()));
@@ -267,6 +253,8 @@ export class AppComponent {
     this.seed.set(parseFloat(seed));
     this.sortType.set(sortType as SortType);
   }
+
+  /* Hotkeys */
 
   @HostListener("window:keydown", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {
