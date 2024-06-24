@@ -12,8 +12,6 @@ import { Settings } from "$lib/components/settings.component";
 import { ALBUMS, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
 import { chooseRandom, shuffleArr } from "$lib/utils";
 
-type Selection = "left" | "right" | "tie";
-
 class UnfinishedException extends Error {
   v1: SongEntry[];
   v2: SongEntry[];
@@ -26,21 +24,6 @@ class UnfinishedException extends Error {
   }
 }
 
-type MergeArgs = {
-  arr: SongEntry[][];
-  his: Selection[];
-  l: number;
-  r: number;
-  m: number;
-};
-
-type MergesortArgs = {
-  arr: SongEntry[][];
-  his: Selection[];
-  farL?: number;
-  farR?: number;
-};
-
 type SongResult = {
   title: string;
   album: string;
@@ -49,7 +32,7 @@ type SongResult = {
 type SongOptions = [SongEntry, SongEntry];
 
 type SortType = "random" | "byAlbum";
-
+type Selection = "left" | "right" | "tie";
 type PageStateFinished = { finished: true; songs: SongResult[] };
 type PageStateUnfinished = { finished: false; options: SongOptions };
 type PageState = PageStateFinished | PageStateUnfinished;
@@ -165,9 +148,9 @@ export class AppComponent {
     const arr = SONGS.map((x) => [x]);
     const his = [...this.history()];
     for (let i = 0; i < albumBounds.length; i++) {
-      const farL = albumBounds[i][0];
-      const farR = albumBounds[i][1];
-      this.mergesort({ arr, his, farL, farR });
+      const start = albumBounds[i][0];
+      const end = albumBounds[i][1];
+      this.mergesort({ arr, his, start, end });
     }
 
     for (let n = 0; n < Math.log2(ALBUMS.length); n++) {
@@ -188,9 +171,14 @@ export class AppComponent {
     return arr;
   }
 
-  private mergesort({ arr, his, farL, farR }: MergesortArgs) {
-    const start = farL ?? 0;
-    const end = farR ?? arr.length;
+  private mergesort(args: {
+    arr: SongEntry[][];
+    his: Selection[];
+    start?: number;
+    end?: number;
+  }) {
+    const { arr, his, start = 0, end = arr.length } = args;
+
     for (let n = 0; n < Math.log2(end); n++) {
       for (let l = start; l < end; l += 2 ** (n + 1)) {
         const m = l + 2 ** n;
@@ -202,8 +190,16 @@ export class AppComponent {
     return arr;
   }
 
-  private merge({ arr, his, l, m, r }: MergeArgs) {
+  private merge(args: {
+    arr: SongEntry[][];
+    his: Selection[];
+    l: number;
+    r: number;
+    m: number;
+  }) {
+    const { arr, his, l, m, r } = args;
     if (m >= r) return;
+
     let [p1, p2] = [l, m];
     const newArr: SongEntry[][] = [];
     while (p1 < m && p2 < r) {
