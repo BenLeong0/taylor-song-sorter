@@ -90,18 +90,6 @@ td {
   text-align: center;
 }
 
-.menu-options {
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-}
-
-.menu-option {
-  width: 100px;
-  cursor: pointer;
-  user-select: none;
-}
-
 /** TOGGLE SWITCH */
 
 /* The switch - the box around the slider */
@@ -142,6 +130,14 @@ td {
   background-color: white;
   -webkit-transition: 0.4s;
   transition: 0.4s;
+}
+
+.slider.left {
+  left: 4px;
+}
+
+.slider.right {
+  right: 4px;
 }
 
 input:checked + .slider {

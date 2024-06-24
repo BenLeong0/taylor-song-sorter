@@ -7,8 +7,9 @@ import {
   signal,
 } from "@angular/core";
 
-import { Menu } from "./lib/components/menu.component";
-import { ALBUMS, SONGS, type SongEntry } from "./lib/data/songs";
+import { Menu } from "$lib/components/menu.component";
+import { Settings } from "$lib/components/settings.component";
+import { ALBUMS, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
 
 type Selection = "left" | "right" | "tie";
 
@@ -55,15 +56,24 @@ type PageState = PageStateFinished | PageStateUnfinished;
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [CommonModule, Menu],
+  imports: [CommonModule, Menu, Settings],
   styleUrl: "./app.component.css",
   templateUrl: "./app.component.html",
 })
 export class AppComponent {
+  protected readonly SHOW_RANDOM_RANKING_OPTION = true;
+
+  protected readonly COLOURS = COLOURS;
+
   protected readonly history = signal<Selection[]>([]);
   protected readonly restartRequested = signal(false);
   protected readonly seed = signal(1);
   protected readonly sortType = signal<SortType>("byAlbum");
+
+  protected readonly started = computed<boolean>(() => {
+    console.log(this.history());
+    return this.history().length > 0;
+  });
 
   public constructor() {
     this.randomiseSeed();
@@ -91,14 +101,8 @@ export class AppComponent {
   });
 
   public toggleSortType() {
-    switch (this.sortType()) {
-      case "byAlbum":
-        this.sortType.set("random");
-        break;
-      case "random":
-        this.sortType.set("byAlbum");
-        break;
-    }
+    const newValue = this.sortType() == "random" ? "byAlbum" : "random";
+    this.sortType.set(newValue);
   }
 
   public selectOption(option: Selection): void {
@@ -135,7 +139,7 @@ export class AppComponent {
   }
 
   private merge({ arr, his, l, m, r }: MergeArgs) {
-    if (m >= arr.length) return;
+    if (m >= r) return;
     let [p1, p2] = [l, m];
     const newArr: SongEntry[][] = [];
     while (p1 < m && p2 < r) {
@@ -199,9 +203,14 @@ export class AppComponent {
     for (let n = 0; n < Math.log2(ALBUMS.length); n++) {
       for (let lInd = 0; lInd < ALBUMS.length; lInd += 2 ** (n + 1)) {
         const l = albumBounds[lInd][0];
-        const m = albumBounds[lInd + 2 ** n][0];
-        const r =
-          albumBounds[Math.min(lInd + 2 ** (n + 1), ALBUMS.length - 1)][1];
+
+        const mInd = lInd + 2 ** n;
+        if (mInd >= ALBUMS.length) continue;
+        const m = albumBounds[mInd][0];
+
+        const rInd = Math.min(mInd + 2 ** n, ALBUMS.length - 1);
+        const r = albumBounds[rInd][1];
+
         this.merge({ arr, his, l, m, r });
       }
     }
@@ -224,11 +233,15 @@ export class AppComponent {
   }
 
   public fillHistory(): void {
-    this.history.set(this.history().concat(new Array(1024).fill("left")));
+    this.history.set(this.history().concat(new Array(1028).fill("left")));
   }
 
-  private randomiseSeed(): void {
+  public randomiseSeed(): void {
     this.seed.set(Math.random() * 100000);
+  }
+
+  public getOptionStyle(song: SongEntry): string {
+    return `background-color: ${COLOURS[song.album]}40`;
   }
 
   private saveToLocalStorage() {
