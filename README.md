@@ -10,6 +10,7 @@ Access here: https://benleong0.github.io/taylor-song-sorter/
   - Especially hard to do when going album-by-album - maybe just add for random order
 - [ ] Songs that aren't on main albums (as a optional setting)
 - [ ] Generate an editable tierlist for [here](https://tiermaker.com/create/all-taylor-swift-songs-updated-for-speak-now-tv-15777298) (not sure if possible)
+- [ ] Account system for saving progress cross-platform
 
 ## Build
 
