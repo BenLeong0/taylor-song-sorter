@@ -54,6 +54,7 @@ h3 {
   border: black 1px solid;
   user-select: none;
   flex-grow: 1;
+  word-break: break-word;
 }
 
 .option p {
@@ -62,7 +63,7 @@ h3 {
 }
 
 .option-main {
-  width: 35%;
+  width: 40%;
 }
 
 .song-title {
