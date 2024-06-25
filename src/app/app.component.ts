@@ -270,21 +270,15 @@ export class AppComponent {
   @HostListener("window:keydown", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (this.pageState().finished) return;
-    switch (event.key) {
-      case "ArrowLeft":
-        this.selectOption("left");
-        break;
-      case "ArrowRight":
-        this.selectOption("right");
-        break;
-      case "ArrowUp":
-      case "ArrowDown":
-        this.selectOption("tie");
-        break;
-      case "Backspace":
-        this.undo();
-        break;
-    }
+
+    const actions: Record<string, VoidFunction> = {
+      ArrowUp: () => this.selectOption("tie"),
+      ArrowDown: () => this.selectOption("tie"),
+      ArrowLeft: () => this.selectOption("left"),
+      ArrowRight: () => this.selectOption("right"),
+      BackSpace: () => this.undo(),
+    } as const;
+    actions[event.key]();
   }
 
   /* Local development */
