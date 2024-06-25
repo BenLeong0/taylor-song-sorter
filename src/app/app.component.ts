@@ -171,6 +171,8 @@ export class AppComponent {
     return arr;
   }
 
+  /* Merging */
+
   private mergesort(args: {
     arr: SongEntry[][];
     his: Selection[];
