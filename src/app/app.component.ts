@@ -1,9 +1,11 @@
+import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { CommonModule } from "@angular/common";
 import {
   Component,
   HostListener,
   computed,
   effect,
+  inject,
   signal,
 } from "@angular/core";
 
@@ -46,6 +48,8 @@ type PageState = PageStateFinished | PageStateUnfinished;
 })
 export class AppComponent {
   protected readonly SHOW_RANDOM_RANKING_OPTION = true;
+
+  private readonly sanitiser = inject(DomSanitizer);
 
   protected readonly COLOURS = COLOURS;
 
@@ -240,6 +244,15 @@ export class AppComponent {
     newArr.forEach((val, ind) => {
       arr[l + ind] = val;
     });
+  }
+
+  /* Spotify */
+
+  public getSpotifyLink(song: SongEntry): SafeResourceUrl {
+    const baseUrl = "https://open.spotify.com/embed";
+    const uriType = song.spotifyIsPodcast ? "episode" : "track";
+    const url = `${baseUrl}/${uriType}/${song.spotifyId}`;
+    return this.sanitiser.bypassSecurityTrustResourceUrl(url);
   }
 
   /* Styling */
