@@ -1,9 +1,11 @@
+import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { CommonModule } from "@angular/common";
 import {
   Component,
   HostListener,
   computed,
   effect,
+  inject,
   signal,
 } from "@angular/core";
 
@@ -46,6 +48,8 @@ type PageState = PageStateFinished | PageStateUnfinished;
 })
 export class AppComponent {
   protected readonly SHOW_RANDOM_RANKING_OPTION = false;
+
+  private readonly sanitiser = inject(DomSanitizer);
 
   protected readonly COLOURS = COLOURS;
 
@@ -171,6 +175,8 @@ export class AppComponent {
     return arr;
   }
 
+  /* Merging */
+
   private mergesort(args: {
     arr: SongEntry[][];
     his: Selection[];
@@ -240,6 +246,15 @@ export class AppComponent {
     });
   }
 
+  /* Spotify */
+
+  public getSpotifyLink(song: SongEntry): SafeResourceUrl {
+    const baseUrl = "https://open.spotify.com/embed";
+    const uriType = song.spotifyIsPodcast ? "episode" : "track";
+    const url = `${baseUrl}/${uriType}/${song.spotifyId}`;
+    return this.sanitiser.bypassSecurityTrustResourceUrl(url);
+  }
+
   /* Styling */
 
   public getOptionStyle(song: SongEntry): string {
@@ -270,21 +285,15 @@ export class AppComponent {
   @HostListener("window:keydown", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (this.pageState().finished) return;
-    switch (event.key) {
-      case "ArrowLeft":
-        this.selectOption("left");
-        break;
-      case "ArrowRight":
-        this.selectOption("right");
-        break;
-      case "ArrowUp":
-      case "ArrowDown":
-        this.selectOption("tie");
-        break;
-      case "Backspace":
-        this.undo();
-        break;
-    }
+
+    const actions: Record<string, VoidFunction> = {
+      ArrowUp: () => this.selectOption("tie"),
+      ArrowDown: () => this.selectOption("tie"),
+      ArrowLeft: () => this.selectOption("left"),
+      ArrowRight: () => this.selectOption("right"),
+      BackSpace: () => this.undo(),
+    } as const;
+    actions[event.key]();
   }
 
   /* Local development */
