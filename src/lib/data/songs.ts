@@ -121,8 +121,16 @@ export const SONGS: SongEntry[] = [
     spotifyId: "7xxDGCQF4QwnXiH8nW0sqd",
     spotifyIsPodcast: true,
   },
-  { title: "Fearless", album: "Fearless", spotifyId: "77sMIMlNaSURUAXq5coCxE" },
-  { title: "Fifteen", album: "Fearless", spotifyId: "2nqio0SfWg6gh2eCtfuMa5" },
+  {
+    title: "Fearless",
+    album: "Fearless",
+    spotifyId: "77sMIMlNaSURUAXq5coCxE",
+  },
+  {
+    title: "Fifteen",
+    album: "Fearless",
+    spotifyId: "2nqio0SfWg6gh2eCtfuMa5",
+  },
   {
     title: "Love Story",
     album: "Fearless",
@@ -143,7 +151,11 @@ export const SONGS: SongEntry[] = [
     album: "Fearless",
     spotifyId: "1qrpoAMXodY6895hGKoUpA",
   },
-  { title: "Breathe", album: "Fearless", spotifyId: "7HC7R2D8WjXVcUHJyEGjRs" },
+  {
+    title: "Breathe",
+    album: "Fearless",
+    spotifyId: "7HC7R2D8WjXVcUHJyEGjRs",
+  },
   {
     title: "Tell Me Why",
     album: "Fearless",
@@ -169,7 +181,11 @@ export const SONGS: SongEntry[] = [
     album: "Fearless",
     spotifyId: "6ON9UuIq49xXY9GPmHIYRp",
   },
-  { title: "Change", album: "Fearless", spotifyId: "3ExweHKZF9B752DPQByRVT" },
+  {
+    title: "Change",
+    album: "Fearless",
+    spotifyId: "3ExweHKZF9B752DPQByRVT",
+  },
   {
     title: "Jump Then Fall",
     album: "Fearless",
@@ -183,59 +199,63 @@ export const SONGS: SongEntry[] = [
   {
     title: "Come In With The Rain",
     album: "Fearless",
-    spotifyId: "01QdEx6kFr78ZejhQtWR5m",
+    spotifyId: "1n2wszmJyVkw6FHqyLnQsY",
   },
   {
     title: "Superstar",
     album: "Fearless",
-    spotifyId: "1n2wszmJyVkw6FHqyLnQsY",
+    spotifyId: "51A8eKvvZz9uydvIZ7xRSV",
   },
   {
     title: "The Other Side of the Door",
     album: "Fearless",
-    spotifyId: "51A8eKvvZz9uydvIZ7xRSV",
+    spotifyId: "1cSFlSBdpT4F5vb1frQ231",
   },
   {
     title: "Today Was a Fairytale",
     album: "Fearless",
-    spotifyId: "1cSFlSBdpT4F5vb1frQ231",
+    spotifyId: "2JoJrsEV15OzbijS47lids",
   },
   {
     title: "You All Over Me",
     album: "Fearless",
-    spotifyId: "2JoJrsEV15OzbijS47lids",
+    spotifyId: "4CHpVfAhuxNJ3ibExe6kxO",
   },
   {
     title: "Mr. Perfectly Fine",
     album: "Fearless",
-    spotifyId: "4CHpVfAhuxNJ3ibExe6kxO",
+    spotifyId: "2CYVETnhM9aytqrazYYwrK",
   },
   {
     title: "We Were Happy",
     album: "Fearless",
-    spotifyId: "2CYVETnhM9aytqrazYYwrK",
+    spotifyId: "34V9RiEPe8MNdU32qJsJa1",
   },
   {
     title: "That's When",
     album: "Fearless",
-    spotifyId: "34V9RiEPe8MNdU32qJsJa1",
+    spotifyId: "7eResoqEJJAVTkQYSqvO3P",
   },
   {
     title: "Don't You",
     album: "Fearless",
-    spotifyId: "7eResoqEJJAVTkQYSqvO3P",
+    spotifyId: "4uuEGH5SVuzkkSFjo2DEiY",
   },
   {
     title: "Bye Bye Baby",
     album: "Fearless",
-    spotifyId: "4uuEGH5SVuzkkSFjo2DEiY",
+    spotifyId: "4qUijfYU8EoIWiY6oSyrgT",
   },
   {
     title: "If This Was a Movie",
     album: "Fearless",
-    spotifyId: "4qUijfYU8EoIWiY6oSyrgT",
+    spotifyId: "0kAZ3H6G9Zac4PMpmobMkj",
   },
-  { title: "Mine", album: "Speak Now", spotifyId: "7G0gBu6nLdhFDPRLc0HdDG" },
+  {
+    title: "Mine",
+    album: "Speak Now",
+    spotifyId: "7G0gBu6nLdhFDPRLc0HdDG",
+  },
   {
     title: "Sparks Fly",
     album: "Speak Now",
@@ -256,7 +276,11 @@ export const SONGS: SongEntry[] = [
     album: "Speak Now",
     spotifyId: "1zU8j1x3yi9xalMF96pzKp",
   },
-  { title: "Mean", album: "Speak Now", spotifyId: "30Y4CV7A6YqtQtTTo7Ue4j" },
+  {
+    title: "Mean",
+    album: "Speak Now",
+    spotifyId: "30Y4CV7A6YqtQtTTo7Ue4j",
+  },
   {
     title: "The Story Of Us",
     album: "Speak Now",
@@ -282,7 +306,11 @@ export const SONGS: SongEntry[] = [
     album: "Speak Now",
     spotifyId: "12nBPF4Rh4XLFJV0YLN7uj",
   },
-  { title: "Haunted", album: "Speak Now", spotifyId: "4tMzIAFTFdqGBQLdfbPces" },
+  {
+    title: "Haunted",
+    album: "Speak Now",
+    spotifyId: "4tMzIAFTFdqGBQLdfbPces",
+  },
   {
     title: "Last Kiss",
     album: "Speak Now",
@@ -293,7 +321,11 @@ export const SONGS: SongEntry[] = [
     album: "Speak Now",
     spotifyId: "4hqJ4bSlYJOXb6Z4SRmzxs",
   },
-  { title: "Ours", album: "Speak Now", spotifyId: "3yNJkriPzWjkkDAWHIAVUq" },
+  {
+    title: "Ours",
+    album: "Speak Now",
+    spotifyId: "3yNJkriPzWjkkDAWHIAVUq",
+  },
   {
     title: "Superman",
     album: "Speak Now",
@@ -334,16 +366,36 @@ export const SONGS: SongEntry[] = [
     album: "Red",
     spotifyId: "6lzc0Al0zfZOIFsFvBS1ki",
   },
-  { title: "Red", album: "Red", spotifyId: "4OAuvHryIVv4kMDNSLuPt6" },
-  { title: "Treacherous", album: "Red", spotifyId: "3S7HNKPakdwNEBFIVTL6dZ" },
+  {
+    title: "Red",
+    album: "Red",
+    spotifyId: "4OAuvHryIVv4kMDNSLuPt6",
+  },
+  {
+    title: "Treacherous",
+    album: "Red",
+    spotifyId: "3S7HNKPakdwNEBFIVTL6dZ",
+  },
   {
     title: "I Knew You Were Trouble",
     album: "Red",
     spotifyId: "6AtZLIzUINvExIUy4QhdjP",
   },
-  { title: "All Too Well", album: "Red", spotifyId: "3nsfB1vus2qaloUdcBZvDu" },
-  { title: "22", album: "Red", spotifyId: "3yII7UwgLF6K5zW3xad3MP" },
-  { title: "I Almost Do", album: "Red", spotifyId: "2r9CbjYgFhtAmcFv1cSquB" },
+  {
+    title: "All Too Well",
+    album: "Red",
+    spotifyId: "3nsfB1vus2qaloUdcBZvDu",
+  },
+  {
+    title: "22",
+    album: "Red",
+    spotifyId: "3yII7UwgLF6K5zW3xad3MP",
+  },
+  {
+    title: "I Almost Do",
+    album: "Red",
+    spotifyId: "2r9CbjYgFhtAmcFv1cSquB",
+  },
   {
     title: "We Are Never Ever Getting Back Together",
     album: "Red",
@@ -354,21 +406,41 @@ export const SONGS: SongEntry[] = [
     album: "Red",
     spotifyId: "7eQj6r5PIdYKEIZjucBMcq",
   },
-  { title: "The Last Time", album: "Red", spotifyId: "0y6kdSRCVQhSsHSpWvTUm7" },
-  { title: "Holy Ground", album: "Red", spotifyId: "7J4b3LVCIGO4CMBDFLPoP6" },
+  {
+    title: "The Last Time",
+    album: "Red",
+    spotifyId: "0y6kdSRCVQhSsHSpWvTUm7",
+  },
+  {
+    title: "Holy Ground",
+    album: "Red",
+    spotifyId: "7J4b3LVCIGO4CMBDFLPoP6",
+  },
   {
     title: "Sad Beautiful Tragic",
     album: "Red",
     spotifyId: "73qMN9bXy7MSPwwGfH3wQr",
   },
-  { title: "The Lucky One", album: "Red", spotifyId: "4e5ayHsOLJNLTGfjau2mEw" },
+  {
+    title: "The Lucky One",
+    album: "Red",
+    spotifyId: "4e5ayHsOLJNLTGfjau2mEw",
+  },
   {
     title: "Everything Has Changed",
     album: "Red",
     spotifyId: "7qEUFOVcxRI19tbT68JcYK",
   },
-  { title: "Starlight", album: "Red", spotifyId: "7A2cNLRT0YJc1yjxHlKihs" },
-  { title: "Begin Again", album: "Red", spotifyId: "05GsNucq8Bngd9fnd4fRa0" },
+  {
+    title: "Starlight",
+    album: "Red",
+    spotifyId: "7A2cNLRT0YJc1yjxHlKihs",
+  },
+  {
+    title: "Begin Again",
+    album: "Red",
+    spotifyId: "05GsNucq8Bngd9fnd4fRa0",
+  },
   {
     title: "The Moment I Knew",
     album: "Red",
@@ -379,11 +451,31 @@ export const SONGS: SongEntry[] = [
     album: "Red",
     spotifyId: "4pNApnaUWAL2J4KO2eqokq",
   },
-  { title: "Girl At Home", album: "Red", spotifyId: "0DMVrlMUn01M0IcpDbwgu7" },
-  { title: "Ronan", album: "Red", spotifyId: "7nWui6jiMM2m9qFmET1Mtj" },
-  { title: "Better Man", album: "Red", spotifyId: "4OmFmE0fzcMG6g0Y8p4eSD" },
-  { title: "Nothing New", album: "Red", spotifyId: "01K4zKU104LyJ8gMb7227B" },
-  { title: "Babe", album: "Red", spotifyId: "0v4z1tuZvn6LGknom9Qx7d" },
+  {
+    title: "Girl At Home",
+    album: "Red",
+    spotifyId: "0DMVrlMUn01M0IcpDbwgu7",
+  },
+  {
+    title: "Ronan",
+    album: "Red",
+    spotifyId: "7nWui6jiMM2m9qFmET1Mtj",
+  },
+  {
+    title: "Better Man",
+    album: "Red",
+    spotifyId: "4OmFmE0fzcMG6g0Y8p4eSD",
+  },
+  {
+    title: "Nothing New",
+    album: "Red",
+    spotifyId: "01K4zKU104LyJ8gMb7227B",
+  },
+  {
+    title: "Babe",
+    album: "Red",
+    spotifyId: "0v4z1tuZvn6LGknom9Qx7d",
+  },
   {
     title: "Message In A Bottle",
     album: "Red",
@@ -399,7 +491,11 @@ export const SONGS: SongEntry[] = [
     album: "Red",
     spotifyId: "3oGVx9RBmiYGv5ZCecWLkx",
   },
-  { title: "Run", album: "Red", spotifyId: "4IQkfUsrwXol38VV3U7t7T" },
+  {
+    title: "Run",
+    album: "Red",
+    spotifyId: "4IQkfUsrwXol38VV3U7t7T",
+  },
   {
     title: "The Very First Night",
     album: "Red",
@@ -415,8 +511,16 @@ export const SONGS: SongEntry[] = [
     album: "1989",
     spotifyId: "4WUepByoeqcedHoYhSNHRt",
   },
-  { title: "Blank Space", album: "1989", spotifyId: "0108kcWLnn2HlH2kedi1gn" },
-  { title: "Style", album: "1989", spotifyId: "3Vpk1hfMAQme8VJ0SNRSkd" },
+  {
+    title: "Blank Space",
+    album: "1989",
+    spotifyId: "0108kcWLnn2HlH2kedi1gn",
+  },
+  {
+    title: "Style",
+    album: "1989",
+    spotifyId: "3Vpk1hfMAQme8VJ0SNRSkd",
+  },
   {
     title: "Out Of The Woods",
     album: "1989",
@@ -427,13 +531,21 @@ export const SONGS: SongEntry[] = [
     album: "1989",
     spotifyId: "2k0ZEeAqzvYMcx9Qt5aClQ",
   },
-  { title: "Shake It Off", album: "1989", spotifyId: "50yNTF0Od55qnHLxYsA5Pw" },
+  {
+    title: "Shake It Off",
+    album: "1989",
+    spotifyId: "50yNTF0Od55qnHLxYsA5Pw",
+  },
   {
     title: "I Wish You Would",
     album: "1989",
     spotifyId: "3FxJDucHWdw6caWTKO5b23",
   },
-  { title: "Bad Blood", album: "1989", spotifyId: "7oZONwFiFIErZcXAtTu7FY" },
+  {
+    title: "Bad Blood",
+    album: "1989",
+    spotifyId: "7oZONwFiFIErZcXAtTu7FY",
+  },
   {
     title: "Wildest Dreams",
     album: "1989",
@@ -444,14 +556,26 @@ export const SONGS: SongEntry[] = [
     album: "1989",
     spotifyId: "733OhaXQIHY7BKtY3vnSkn",
   },
-  { title: "This Love", album: "1989", spotifyId: "4WBEj8TeGtRPNJdOmT3WJW" },
+  {
+    title: "This Love",
+    album: "1989",
+    spotifyId: "4WBEj8TeGtRPNJdOmT3WJW",
+  },
   {
     title: "I Know Places",
     album: "1989",
     spotifyId: "1ULabO0PEsdJekqVH6G10G",
   },
-  { title: "Clean", album: "1989", spotifyId: "0lKUBmEyQfzsQHozyeXzES" },
-  { title: "Wonderland", album: "1989", spotifyId: "6HRsJu8vcnzYDN4t0570FY" },
+  {
+    title: "Clean",
+    album: "1989",
+    spotifyId: "0lKUBmEyQfzsQHozyeXzES",
+  },
+  {
+    title: "Wonderland",
+    album: "1989",
+    spotifyId: "6HRsJu8vcnzYDN4t0570FY",
+  },
   {
     title: "You Are In Love",
     album: "1989",
@@ -462,8 +586,16 @@ export const SONGS: SongEntry[] = [
     album: "1989",
     spotifyId: "5M787RexsAiVYjQusM98CV",
   },
-  { title: '"Slut!"', album: "1989", spotifyId: "0CD7DzeCsuPJygddqlUVYa" },
-  { title: "Say Don't Go", album: "1989", spotifyId: "3CCRVu4F91Qp2mnGjmWBrf" },
+  {
+    title: '"Slut!"',
+    album: "1989",
+    spotifyId: "0CD7DzeCsuPJygddqlUVYa",
+  },
+  {
+    title: "Say Don't Go",
+    album: "1989",
+    spotifyId: "3CCRVu4F91Qp2mnGjmWBrf",
+  },
   {
     title: "Now That We Don't Talk",
     album: "1989",
@@ -544,7 +676,11 @@ export const SONGS: SongEntry[] = [
     album: "reputation",
     spotifyId: "7I7JbDv63ZJJsSi24DyJrz",
   },
-  { title: "Dress", album: "reputation", spotifyId: "6oVxXO5oQ4pTpO8RSnkzvv" },
+  {
+    title: "Dress",
+    album: "reputation",
+    spotifyId: "6oVxXO5oQ4pTpO8RSnkzvv",
+  },
   {
     title: "This Is Why We Can't Have Nice Things",
     album: "reputation",
@@ -570,9 +706,21 @@ export const SONGS: SongEntry[] = [
     album: "Lover",
     spotifyId: "1BxfuPKGuaTgP7aM0Bbdwr",
   },
-  { title: "Lover", album: "Lover", spotifyId: "1dGr1c8CrMLDpV6mPbImSI" },
-  { title: "The Man", album: "Lover", spotifyId: "3RauEVgRgj1IuWdJ9fDs70" },
-  { title: "The Archer", album: "Lover", spotifyId: "3pHkh7d0lzM2AldUtz2x37" },
+  {
+    title: "Lover",
+    album: "Lover",
+    spotifyId: "1dGr1c8CrMLDpV6mPbImSI",
+  },
+  {
+    title: "The Man",
+    album: "Lover",
+    spotifyId: "3RauEVgRgj1IuWdJ9fDs70",
+  },
+  {
+    title: "The Archer",
+    album: "Lover",
+    spotifyId: "3pHkh7d0lzM2AldUtz2x37",
+  },
   {
     title: "I Think He Knows",
     album: "Lover",
@@ -583,7 +731,11 @@ export const SONGS: SongEntry[] = [
     album: "Lover",
     spotifyId: "214nt20w5wOxJnY462klLw",
   },
-  { title: "Paper Rings", album: "Lover", spotifyId: "4y5bvROuBDPr5fuwXbIBZR" },
+  {
+    title: "Paper Rings",
+    album: "Lover",
+    spotifyId: "4y5bvROuBDPr5fuwXbIBZR",
+  },
   {
     title: "Cornelia Street",
     album: "Lover",
@@ -594,39 +746,71 @@ export const SONGS: SongEntry[] = [
     album: "Lover",
     spotifyId: "2dgFqt3w9xIQRjhPtwNk3D",
   },
-  { title: "London Boy", album: "Lover", spotifyId: "1LLXZFeAHK9R4xUramtUKw" },
+  {
+    title: "London Boy",
+    album: "Lover",
+    spotifyId: "1LLXZFeAHK9R4xUramtUKw",
+  },
   {
     title: "Soon You'll Get Better",
     album: "Lover",
     spotifyId: "4AYtqFyFbX0Xkc2wtcygTr",
   },
-  { title: "False God", album: "Lover", spotifyId: "5hQSXkFgbxjZo9uCwd11so" },
+  {
+    title: "False God",
+    album: "Lover",
+    spotifyId: "5hQSXkFgbxjZo9uCwd11so",
+  },
   {
     title: "You Need To Calm Down",
     album: "Lover",
     spotifyId: "6RRNNciQGZEXnqk8SQ9yv5",
   },
-  { title: "Afterglow", album: "Lover", spotifyId: "1SymEzIT3H8UZfibCs3TYi" },
-  { title: "ME!", album: "Lover", spotifyId: "2Rk4JlNc2TPmZe2af99d45" },
+  {
+    title: "Afterglow",
+    album: "Lover",
+    spotifyId: "1SymEzIT3H8UZfibCs3TYi",
+  },
+  {
+    title: "ME!",
+    album: "Lover",
+    spotifyId: "2Rk4JlNc2TPmZe2af99d45",
+  },
   {
     title: "It's Nice To Have A Friend",
     album: "Lover",
     spotifyId: "1SmiQ65iSAbPto6gPFlBYm",
   },
-  { title: "Daylight", album: "Lover", spotifyId: "1fzAuUVbzlhZ1lJAx9PtY6" },
+  {
+    title: "Daylight",
+    album: "Lover",
+    spotifyId: "1fzAuUVbzlhZ1lJAx9PtY6",
+  },
   {
     title: "All Of The Girls You Loved Before",
     album: "Lover",
     spotifyId: "4P9Q0GojKVXpRTJCaL3kyy",
   },
-  { title: "the 1", album: "folklore", spotifyId: "4pfrrhvplbJZAIsfosGWQP" },
-  { title: "cardigan", album: "folklore", spotifyId: "0KRYCBwIpWYFNrXOmXbyUh" },
+  {
+    title: "the 1",
+    album: "folklore",
+    spotifyId: "4pfrrhvplbJZAIsfosGWQP",
+  },
+  {
+    title: "cardigan",
+    album: "folklore",
+    spotifyId: "0KRYCBwIpWYFNrXOmXbyUh",
+  },
   {
     title: "the last great american dynasty",
     album: "folklore",
     spotifyId: "2olxzvoFI9IpxqFeUv7WOX",
   },
-  { title: "exile", album: "folklore", spotifyId: "5S4aYQAJOwJMAamANWlICO" },
+  {
+    title: "exile",
+    album: "folklore",
+    spotifyId: "5S4aYQAJOwJMAamANWlICO",
+  },
   {
     title: "my tears ricochet",
     album: "folklore",
@@ -637,8 +821,16 @@ export const SONGS: SongEntry[] = [
     album: "folklore",
     spotifyId: "2I8YAEA1VmCuP1wkJHMpTw",
   },
-  { title: "seven", album: "folklore", spotifyId: "76mOLcXOjOEhyY4mMF1l3r" },
-  { title: "august", album: "folklore", spotifyId: "6nK2pIKFcRc5frrZKHgsiT" },
+  {
+    title: "seven",
+    album: "folklore",
+    spotifyId: "76mOLcXOjOEhyY4mMF1l3r",
+  },
+  {
+    title: "august",
+    album: "folklore",
+    spotifyId: "6nK2pIKFcRc5frrZKHgsiT",
+  },
   {
     title: "this is me trying",
     album: "folklore",
@@ -659,16 +851,36 @@ export const SONGS: SongEntry[] = [
     album: "folklore",
     spotifyId: "0RP1kqoSPkVXsKiQNhMKzV",
   },
-  { title: "epiphany", album: "folklore", spotifyId: "1EXa37LpSvi3OQ9UYQ28rD" },
-  { title: "betty", album: "folklore", spotifyId: "3IhtE4fkytdrtEfV34UzkD" },
-  { title: "peace", album: "folklore", spotifyId: "6JlI8Ay77m4nJvZTHvfT1J" },
-  { title: "hoax", album: "folklore", spotifyId: "0YeDG5HnKnG7jpArkzsSPa" },
+  {
+    title: "epiphany",
+    album: "folklore",
+    spotifyId: "1EXa37LpSvi3OQ9UYQ28rD",
+  },
+  {
+    title: "betty",
+    album: "folklore",
+    spotifyId: "3IhtE4fkytdrtEfV34UzkD",
+  },
+  {
+    title: "peace",
+    album: "folklore",
+    spotifyId: "6JlI8Ay77m4nJvZTHvfT1J",
+  },
+  {
+    title: "hoax",
+    album: "folklore",
+    spotifyId: "0YeDG5HnKnG7jpArkzsSPa",
+  },
   {
     title: "the lakes",
     album: "folklore",
     spotifyId: "0eFQWVz0qIxDOvhLpZ40P7",
   },
-  { title: "willow", album: "evermore", spotifyId: "2gVhfX2Gy1T9kDuS9azrF7" },
+  {
+    title: "willow",
+    album: "evermore",
+    spotifyId: "2gVhfX2Gy1T9kDuS9azrF7",
+  },
   {
     title: "champagne problems",
     album: "evermore",
@@ -699,13 +911,21 @@ export const SONGS: SongEntry[] = [
     album: "evermore",
     spotifyId: "55Vf4bimc1Rtfg0PAQRAo2",
   },
-  { title: "dorothea", album: "evermore", spotifyId: "66tOfHVH3aUrscg8vExRV4" },
+  {
+    title: "dorothea",
+    album: "evermore",
+    spotifyId: "66tOfHVH3aUrscg8vExRV4",
+  },
   {
     title: "coney island",
     album: "evermore",
     spotifyId: "2awNGIJHodfLZSClB3PYhz",
   },
-  { title: "ivy", album: "evermore", spotifyId: "43Ykum9T72UOPhBN31grpN" },
+  {
+    title: "ivy",
+    album: "evermore",
+    spotifyId: "43Ykum9T72UOPhBN31grpN",
+  },
   {
     title: "cowboy like me",
     album: "evermore",
@@ -716,9 +936,21 @@ export const SONGS: SongEntry[] = [
     album: "evermore",
     spotifyId: "5VYWxXUpxuxEmCqMLDqICo",
   },
-  { title: "marjorie", album: "evermore", spotifyId: "5uICWmZTLkpEVbK22PBP6e" },
-  { title: "closure", album: "evermore", spotifyId: "6a8aUhYbaQBUI8PcJ5ZmQ6" },
-  { title: "evermore", album: "evermore", spotifyId: "6Wlq9rqkxrqj5Kls4Kw14H" },
+  {
+    title: "marjorie",
+    album: "evermore",
+    spotifyId: "5uICWmZTLkpEVbK22PBP6e",
+  },
+  {
+    title: "closure",
+    album: "evermore",
+    spotifyId: "6a8aUhYbaQBUI8PcJ5ZmQ6",
+  },
+  {
+    title: "evermore",
+    album: "evermore",
+    spotifyId: "6Wlq9rqkxrqj5Kls4Kw14H",
+  },
   {
     title: "right where you left me",
     album: "evermore",
@@ -734,7 +966,11 @@ export const SONGS: SongEntry[] = [
     album: "Midnights",
     spotifyId: "24emu3sabKISjRkrys28jq",
   },
-  { title: "Maroon", album: "Midnights", spotifyId: "6qxvy9Pe4RJIq5JBVbbwbS" },
+  {
+    title: "Maroon",
+    album: "Midnights",
+    spotifyId: "6qxvy9Pe4RJIq5JBVbbwbS",
+  },
   {
     title: "Anti-Hero",
     album: "Midnights",
@@ -775,7 +1011,11 @@ export const SONGS: SongEntry[] = [
     album: "Midnights",
     spotifyId: "4bBDkw2KBMX0tcgAaXC83Q",
   },
-  { title: "Karma", album: "Midnights", spotifyId: "45R112Jz5hQeKgITXgSXzs" },
+  {
+    title: "Karma",
+    album: "Midnights",
+    spotifyId: "45R112Jz5hQeKgITXgSXzs",
+  },
   {
     title: "Sweet Nothing",
     album: "Midnights",
@@ -821,8 +1061,16 @@ export const SONGS: SongEntry[] = [
     album: "Midnights",
     spotifyId: "3CWq0pAKKTWb0K4yiglDc4",
   },
-  { title: "Paris", album: "Midnights", spotifyId: "5tWxKWq1DSP1s9WQ5PWuqu" },
-  { title: "Glitch", album: "Midnights", spotifyId: "7C0w28EsX0Um2FrZs9gso2" },
+  {
+    title: "Paris",
+    album: "Midnights",
+    spotifyId: "5tWxKWq1DSP1s9WQ5PWuqu",
+  },
+  {
+    title: "Glitch",
+    album: "Midnights",
+    spotifyId: "7C0w28EsX0Um2FrZs9gso2",
+  },
   {
     title: "Fortnight",
     album: "The Tortured Poets Department",
