@@ -72,6 +72,25 @@
         >
           generate fake ranking
         </div>
+
+        <div class="spotify-players">
+          <iframe
+            [src]="getSpotifyLink(state.options[0])"
+            width="300"
+            height="80"
+            frameborder="0"
+            allowtransparency="true"
+            allow="encrypted-media"
+          ></iframe>
+          <iframe
+            [src]="getSpotifyLink(state.options[1])"
+            width="300"
+            height="80"
+            frameborder="0"
+            allowtransparency="true"
+            allow="encrypted-media"
+          ></iframe>
+        </div>
       }
     }
   </div>

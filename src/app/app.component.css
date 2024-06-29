@@ -99,3 +99,10 @@ td {
 .col-rank {
   text-align: center;
 }
+
+.spotify-players {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+}
