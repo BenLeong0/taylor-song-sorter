@@ -166,7 +166,7 @@ export class AppComponent {
         const m = albumBounds[mInd][0];
 
         const rInd = mInd + 2 ** n;
-        const r = rInd > ALBUMS.length ? ALBUMS.length : albumBounds[rInd][0];
+        const r = albumBounds[rInd]?.[0] ?? ALBUMS.length;
 
         this.merge({ arr, his, l, m, r });
       }
@@ -291,7 +291,7 @@ export class AppComponent {
       ArrowDown: () => this.selectOption("tie"),
       ArrowLeft: () => this.selectOption("left"),
       ArrowRight: () => this.selectOption("right"),
-      BackSpace: () => this.undo(),
+      Backspace: () => this.undo(),
     } as const;
     actions[event.key]();
   }
