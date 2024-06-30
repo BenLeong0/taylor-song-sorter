@@ -12,7 +12,7 @@ import {
 import { Menu } from "$lib/components/menu.component";
 import { Settings } from "$lib/components/settings.component";
 import { ALBUMS, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
-import { chooseRandom, shuffleArr } from "$lib/utils";
+import { shuffleArr } from "$lib/utils";
 
 class UnfinishedException extends Error {
   v1: SongEntry[];
@@ -75,7 +75,7 @@ export class AppComponent {
     } catch (e) {
       if (!(e instanceof UnfinishedException)) throw e;
 
-      const options: SongOptions = [chooseRandom(e.v1), chooseRandom(e.v2)];
+      const options: SongOptions = [e.v1[0], e.v2[0]];
       return { finished: false, options };
     }
   });
@@ -165,8 +165,8 @@ export class AppComponent {
         if (mInd >= ALBUMS.length) continue;
         const m = albumBounds[mInd][0];
 
-        const rInd = Math.min(mInd + 2 ** n, ALBUMS.length - 1);
-        const r = albumBounds[rInd][1];
+        const rInd = mInd + 2 ** n;
+        const r = albumBounds[rInd]?.[0] ?? ALBUMS.length;
 
         this.merge({ arr, his, l, m, r });
       }
@@ -291,7 +291,7 @@ export class AppComponent {
       ArrowDown: () => this.selectOption("tie"),
       ArrowLeft: () => this.selectOption("left"),
       ArrowRight: () => this.selectOption("right"),
-      BackSpace: () => this.undo(),
+      Backspace: () => this.undo(),
     } as const;
     actions[event.key]();
   }
