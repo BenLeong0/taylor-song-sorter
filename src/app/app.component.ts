@@ -58,6 +58,12 @@ export class AppComponent {
   protected readonly seed = signal(1);
   protected readonly sortType = signal<SortType>("byAlbum");
 
+  protected progress = 0;
+  protected maxProgress = 1;
+  protected get progressPercent() {
+    return ((100 * this.progress) / this.maxProgress).toFixed(2);
+  }
+
   protected readonly started = computed<boolean>(() => {
     return this.history().length > 0;
   });
@@ -123,6 +129,7 @@ export class AppComponent {
 
   private sortSongs(): SongResult[] {
     const sortType = this.sortType();
+    this.progress = 0;
     const res = sortType === "random" ? this.randomSort() : this.albumSort();
 
     const songs: SongResult[] = res
@@ -138,6 +145,7 @@ export class AppComponent {
   }
 
   private randomSort() {
+    this.maxProgress = SONGS.length * Math.ceil(Math.log2(SONGS.length));
     const arr = shuffleArr(SONGS, this.seed()).map((x) => [x]);
     const his = [...this.history()];
     return this.mergesort({ arr, his });
@@ -204,7 +212,10 @@ export class AppComponent {
     m: number;
   }) {
     const { arr, his, l, m, r } = args;
-    if (m >= r) return;
+    if (m >= r) {
+      this.progress += m - l;
+      return;
+    }
 
     let [p1, p2] = [l, m];
     const newArr: SongEntry[][] = [];
@@ -228,19 +239,26 @@ export class AppComponent {
       const ans = his.shift();
       if (ans == "left") {
         newArr.push(v1);
+        this.progress += v1.length;
         p1++;
       } else if (ans == "right") {
         newArr.push(v2);
+        this.progress += v2.length;
         p2++;
       } else if (ans == "tie") {
         newArr.push([...v1, ...v2], []);
+        this.progress += v1.length + v2.length;
         p1++;
         p2++;
       }
     }
 
     newArr.push(...arr.slice(p1, m));
+    this.progress += m - p1;
+
     newArr.push(...arr.slice(p2, r));
+    this.progress += r - p2;
+
     newArr.forEach((val, ind) => {
       arr[l + ind] = val;
     });
@@ -293,7 +311,8 @@ export class AppComponent {
       ArrowRight: () => this.selectOption("right"),
       Backspace: () => this.undo(),
     } as const;
-    actions[event.key]();
+    const action = actions[event.key];
+    action && action();
   }
 
   /* Local development */
