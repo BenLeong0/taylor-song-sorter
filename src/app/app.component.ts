@@ -174,7 +174,7 @@ export class AppComponent {
         const m = albumBounds[mInd][0];
 
         const rInd = mInd + 2 ** n;
-        const r = albumBounds[rInd]?.[0] ?? ALBUMS.length;
+        const r = albumBounds[rInd]?.[0] ?? SONGS.length;
 
         this.merge({ arr, his, l, m, r });
       }
