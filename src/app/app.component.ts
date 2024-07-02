@@ -11,8 +11,8 @@ import {
 
 import { Menu } from "$lib/components/menu.component";
 import { Settings } from "$lib/components/settings.component";
-import { ALBUMS, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
-import { shuffleArr } from "$lib/utils";
+import { ALBUMS, Album, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
+import { binaryPairings, shuffleArr, sum } from "$lib/utils";
 
 class UnfinishedException extends Error {
   v1: SongEntry[];
@@ -59,10 +59,6 @@ export class AppComponent {
   protected readonly sortType = signal<SortType>("byAlbum");
 
   protected progress = 0;
-  protected maxProgress = 1;
-  protected get progressPercent() {
-    return ((100 * this.progress) / this.maxProgress).toFixed(2);
-  }
 
   protected readonly started = computed<boolean>(() => {
     return this.history().length > 0;
@@ -145,7 +141,6 @@ export class AppComponent {
   }
 
   private randomSort() {
-    this.maxProgress = SONGS.length * Math.ceil(Math.log2(SONGS.length));
     const arr = shuffleArr(SONGS, this.seed()).map((x) => [x]);
     const his = [...this.history()];
     return this.mergesort({ arr, his });
@@ -193,9 +188,9 @@ export class AppComponent {
   }) {
     const { arr, his, start = 0, end = arr.length } = args;
 
-    for (let n = 0; n < Math.log2(end); n++) {
+    for (let n = 0; n < Math.log2(end - start); n++) {
       for (let l = start; l < end; l += 2 ** (n + 1)) {
-        const m = l + 2 ** n;
+        const m = Math.min(l + 2 ** n, end);
         const r = Math.min(m + 2 ** n, end);
         this.merge({ arr, his, l, m, r });
       }
@@ -213,7 +208,8 @@ export class AppComponent {
   }) {
     const { arr, his, l, m, r } = args;
     if (m >= r) {
-      this.progress += m - l;
+      console.log(l, m, r);
+      this.progress += m - l - 1;
       return;
     }
 
@@ -271,6 +267,47 @@ export class AppComponent {
     const uriType = song.spotifyIsPodcast ? "episode" : "track";
     const url = `${baseUrl}/${uriType}/${song.spotifyId}`;
     return this.sanitiser.bypassSecurityTrustResourceUrl(url);
+  }
+
+  /* Progress */
+
+  protected get maxProgress(): number {
+    if (this.sortType() === "random") {
+      return SONGS.length * Math.ceil(Math.log2(SONGS.length));
+    }
+
+    const albumLengths = ALBUMS.map(
+      (album) => SONGS.filter((song) => song.album === album).length
+    );
+
+    const part1 = sum(
+      albumLengths.map((length) => length * Math.ceil(Math.log2(length)))
+    );
+
+    console.log(part1);
+    console.log(albumLengths);
+    console.log(
+      albumLengths.map((length) => length * Math.ceil(Math.log2(length)))
+    );
+
+    let part2 = 0;
+    const albumPairings = binaryPairings(ALBUMS.length);
+    for (let { l, r } of albumPairings) {
+      const m = (l + r) / 2;
+    }
+
+    for (let n = 0; n < Math.log2(ALBUMS.length); n++) {
+      for (let l = 0; l < ALBUMS.length; l += 2 ** (n + 1)) {
+        const r = l + 2 ** (n + 1);
+        part2 += albumLengths.slice(l, r).reduce((a, b) => a + b);
+      }
+    }
+
+    return part1 + part2;
+  }
+
+  protected get progressPercent() {
+    return ((100 * this.progress) / this.maxProgress).toFixed(2);
   }
 
   /* Styling */
