@@ -12,7 +12,7 @@ import {
 import { Menu } from "$lib/components/menu.component";
 import { Settings } from "$lib/components/settings.component";
 import { ALBUMS, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
-import { shuffleArr } from "$lib/utils";
+import { binaryPairings, shuffleArr } from "$lib/utils";
 
 class UnfinishedException extends Error {
   v1: SongEntry[];
@@ -151,25 +151,14 @@ export class AppComponent {
 
     const arr = SONGS.map((x) => [x]);
     const his = [...this.history()];
-    for (let i = 0; i < albumBounds.length; i++) {
-      const start = albumBounds[i][0];
-      const end = albumBounds[i][1];
-      this.mergesort({ arr, his, start, end });
-    }
+    albumBounds.forEach((bounds) => this.mergesort({ arr, his, bounds }));
 
-    for (let n = 0; n < Math.log2(ALBUMS.length); n++) {
-      for (let lInd = 0; lInd < ALBUMS.length; lInd += 2 ** (n + 1)) {
-        const l = albumBounds[lInd][0];
-
-        const mInd = lInd + 2 ** n;
-        if (mInd >= ALBUMS.length) continue;
-        const m = albumBounds[mInd][0];
-
-        const rInd = mInd + 2 ** n;
-        const r = albumBounds[rInd]?.[0] ?? SONGS.length;
-
-        this.merge({ arr, his, l, m, r });
-      }
+    const indexPairings = binaryPairings(ALBUMS.length);
+    for (let { l: lInd, m: mInd, r: rInd } of indexPairings) {
+      const l = albumBounds[lInd][0];
+      const m = albumBounds[mInd]?.[0] ?? SONGS.length;
+      const r = albumBounds[rInd]?.[0] ?? SONGS.length;
+      this.merge({ arr, his, l, m, r });
     }
 
     return arr;
@@ -180,17 +169,15 @@ export class AppComponent {
   private mergesort(args: {
     arr: SongEntry[][];
     his: Selection[];
-    start?: number;
-    end?: number;
+    bounds?: [number, number];
   }) {
-    const { arr, his, start = 0, end = arr.length } = args;
+    const { arr, his, bounds } = args;
+    const [start, end] = bounds ?? [0, arr.length];
 
-    for (let n = 0; n < Math.log2(end); n++) {
-      for (let l = start; l < end; l += 2 ** (n + 1)) {
-        const m = l + 2 ** n;
-        const r = Math.min(m + 2 ** n, end);
-        this.merge({ arr, his, l, m, r });
-      }
+    const pairings = binaryPairings(end - start, start);
+    for (let { l, m, r: rMax } of pairings) {
+      const r = Math.min(end, rMax);
+      this.merge({ arr, his, l, m, r });
     }
 
     return arr;
@@ -204,11 +191,11 @@ export class AppComponent {
     m: number;
   }) {
     const { arr, his, l, m, r } = args;
-    if (m >= r) return;
 
-    let [p1, p2] = [l, m];
     const newArr: SongEntry[][] = [];
-    while (p1 < m && p2 < r) {
+    let [p1, p2] = [l, m];
+
+    while (p1 < m && p2 < r && p2 < arr.length) {
       const [v1, v2] = [arr[p1], arr[p2]];
       if (v1.length == 0) {
         p1++;
@@ -225,17 +212,20 @@ export class AppComponent {
         throw new UnfinishedException("not finished!", v1, v2);
       }
 
-      const ans = his.shift();
-      if (ans == "left") {
-        newArr.push(v1);
-        p1++;
-      } else if (ans == "right") {
-        newArr.push(v2);
-        p2++;
-      } else if (ans == "tie") {
-        newArr.push([...v1, ...v2], []);
-        p1++;
-        p2++;
+      switch (his.shift()!) {
+        case "left":
+          newArr.push(v1);
+          p1++;
+          break;
+        case "right":
+          newArr.push(v2);
+          p2++;
+          break;
+        case "tie":
+          newArr.push([...v1, ...v2], []);
+          p1++;
+          p2++;
+          break;
       }
     }
 
