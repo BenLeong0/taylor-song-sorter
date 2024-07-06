@@ -124,8 +124,8 @@ export class AppComponent {
   /* Sorting */
 
   private sortSongs(): SongResult[] {
-    const sortType = this.sortType();
     this.progress = 0;
+    const sortType = this.sortType();
     const res = sortType === "random" ? this.randomSort() : this.albumSort();
 
     const songs: SongResult[] = res
