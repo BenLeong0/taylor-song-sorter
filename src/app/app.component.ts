@@ -11,7 +11,7 @@ import {
 
 import { Menu } from "$lib/components/menu.component";
 import { Settings } from "$lib/components/settings.component";
-import { ALBUMS, Album, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
+import { ALBUMS, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
 import { getBinaryPairings, shuffleArr, sum } from "$lib/utils";
 
 class UnfinishedException extends Error {
