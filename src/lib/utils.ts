@@ -9,3 +9,17 @@ export function shuffleArr<T>(arr: T[], seed: number): T[] {
     .sort((a, b) => a.sort - b.sort)
     .map(({ value }) => value);
 }
+
+export function sum(arr: number[]): number {
+  return arr.reduce((a, b) => a + b);
+}
+
+export function* getBinaryPairings(length: number, offset: number = 0) {
+  for (let n = 0; n < Math.log2(length); n++) {
+    for (let l = offset; l < offset + length; l += 2 ** (n + 1)) {
+      const r = l + 2 ** (n + 1);
+      const m = (l + r) / 2;
+      yield { l, m, r };
+    }
+  }
+}
