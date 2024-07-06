@@ -222,7 +222,8 @@ export class AppComponent {
         throw new UnfinishedException("not finished!", v1, v2);
       }
 
-      switch (his.shift()!) {
+      const ans = his.shift()!;
+      switch (ans) {
         case "left":
           newArr.push(v1);
           this.progress += v1.length;
