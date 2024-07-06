@@ -12,7 +12,7 @@ import {
 import { Menu } from "$lib/components/menu.component";
 import { Settings } from "$lib/components/settings.component";
 import { ALBUMS, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
-import { getBinaryPairings, shuffleArr } from "$lib/utils";
+import { getBinaryPairings, shuffleArr, sum } from "$lib/utils";
 
 class UnfinishedException extends Error {
   v1: SongEntry[];
@@ -57,6 +57,8 @@ export class AppComponent {
   protected readonly restartRequested = signal(false);
   protected readonly seed = signal(1);
   protected readonly sortType = signal<SortType>("byAlbum");
+
+  private progress = 0;
 
   protected readonly started = computed<boolean>(() => {
     return this.history().length > 0;
@@ -122,6 +124,7 @@ export class AppComponent {
   /* Sorting */
 
   private sortSongs(): SongResult[] {
+    this.progress = 0;
     const sortType = this.sortType();
     const res = sortType === "random" ? this.randomSort() : this.albumSort();
 
@@ -190,7 +193,9 @@ export class AppComponent {
     r: number;
     m: number;
   }) {
-    const { arr, his, l, m, r } = args;
+    const { arr, his, l } = args;
+    const r = Math.min(args.r, arr.length);
+    const m = Math.min(args.m, r);
 
     const newArr: SongEntry[][] = [];
     let [p1, p2] = [l, m];
@@ -198,13 +203,13 @@ export class AppComponent {
     while (p1 < m && p2 < r && p2 < arr.length) {
       const [v1, v2] = [arr[p1], arr[p2]];
       if (v1.length == 0) {
-        p1++;
         newArr.push([]);
+        p1++;
         continue;
       }
       if (v2.length == 0) {
-        p2++;
         newArr.push([]);
+        p2++;
         continue;
       }
 
@@ -212,17 +217,21 @@ export class AppComponent {
         throw new UnfinishedException("not finished!", v1, v2);
       }
 
-      switch (his.shift()!) {
+      const ans = his.shift()!;
+      switch (ans) {
         case "left":
           newArr.push(v1);
+          this.progress += v1.length;
           p1++;
           break;
         case "right":
           newArr.push(v2);
+          this.progress += v2.length;
           p2++;
           break;
         case "tie":
           newArr.push([...v1, ...v2], []);
+          this.progress += v1.length + v2.length;
           p1++;
           p2++;
           break;
@@ -230,7 +239,11 @@ export class AppComponent {
     }
 
     newArr.push(...arr.slice(p1, m));
+    this.progress += m - p1;
+
     newArr.push(...arr.slice(p2, r));
+    this.progress += r - p2;
+
     newArr.forEach((val, ind) => {
       arr[l + ind] = val;
     });
@@ -243,6 +256,33 @@ export class AppComponent {
     const uriType = song.spotifyIsPodcast ? "episode" : "track";
     const url = `${baseUrl}/${uriType}/${song.spotifyId}`;
     return this.sanitiser.bypassSecurityTrustResourceUrl(url);
+  }
+
+  /* Progress */
+
+  protected get progressPercent() {
+    return ((100 * this.progress) / this.maxProgress).toFixed(2);
+  }
+
+  private get maxProgress(): number {
+    if (this.sortType() === "random") {
+      return SONGS.length * Math.ceil(Math.log2(SONGS.length));
+    }
+
+    const albumLengths = ALBUMS.map(
+      (album) => SONGS.filter((song) => song.album === album).length
+    );
+
+    const part1 = sum(
+      albumLengths.map((length) => length * Math.ceil(Math.log2(length)))
+    );
+
+    const pairings = getBinaryPairings(ALBUMS.length);
+    const part2 = sum(
+      [...pairings].map(({ l, r }) => sum(albumLengths.slice(l, r)))
+    );
+
+    return part1 + part2;
   }
 
   /* Styling */
@@ -283,7 +323,8 @@ export class AppComponent {
       ArrowRight: () => this.selectOption("right"),
       Backspace: () => this.undo(),
     } as const;
-    actions[event.key]();
+    const action = actions[event.key];
+    action && action();
   }
 
   /* Local development */
