@@ -7,6 +7,7 @@ Access here: https://benleong0.github.io/taylor-song-sorter/
 - [x] Update favicon and tab title
 - [x] Note about not overusing ties
 - [x] Spotify preview
+- [ ] WWHD
 - [ ] Tailwind
 - [ ] Progress %
   - Especially hard to do when going album-by-album - maybe just add for random order
