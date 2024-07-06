@@ -203,13 +203,13 @@ export class AppComponent {
     while (p1 < m && p2 < r && p2 < arr.length) {
       const [v1, v2] = [arr[p1], arr[p2]];
       if (v1.length == 0) {
-        p1++;
         newArr.push([]);
+        p1++;
         continue;
       }
       if (v2.length == 0) {
-        p2++;
         newArr.push([]);
+        p2++;
         continue;
       }
 
