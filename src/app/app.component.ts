@@ -193,14 +193,9 @@ export class AppComponent {
     r: number;
     m: number;
   }) {
-    const { arr, his, l, m, r } = args;
-
-    // ASSESS
-    if (m >= r) {
-      console.log(l, m, r);
-      this.progress += m - l - 1;
-      return;
-    }
+    const { arr, his, l } = args;
+    const r = Math.min(args.r, arr.length);
+    const m = Math.min(args.m, r);
 
     const newArr: SongEntry[][] = [];
     let [p1, p2] = [l, m];
@@ -278,24 +273,10 @@ export class AppComponent {
       albumLengths.map((length) => length * Math.ceil(Math.log2(length)))
     );
 
-    console.log(part1);
-    console.log(albumLengths);
-    console.log(
-      albumLengths.map((length) => length * Math.ceil(Math.log2(length)))
+    const pairings = getBinaryPairings(ALBUMS.length);
+    const part2 = sum(
+      [...pairings].map(({ l, r }) => sum(albumLengths.slice(l, r)))
     );
-
-    let part2 = 0;
-    const albumPairings = getBinaryPairings(ALBUMS.length);
-    for (let { l, r } of albumPairings) {
-      const m = (l + r) / 2;
-    }
-
-    for (let n = 0; n < Math.log2(ALBUMS.length); n++) {
-      for (let l = 0; l < ALBUMS.length; l += 2 ** (n + 1)) {
-        const r = l + 2 ** (n + 1);
-        part2 += albumLengths.slice(l, r).reduce((a, b) => a + b);
-      }
-    }
 
     return part1 + part2;
   }
