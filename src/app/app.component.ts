@@ -58,7 +58,7 @@ export class AppComponent {
   protected readonly seed = signal(1);
   protected readonly sortType = signal<SortType>("byAlbum");
 
-  protected progress = 0;
+  private progress = 0;
 
   protected readonly started = computed<boolean>(() => {
     return this.history().length > 0;
@@ -260,7 +260,11 @@ export class AppComponent {
 
   /* Progress */
 
-  protected get maxProgress(): number {
+  protected get progressPercent() {
+    return ((100 * this.progress) / this.maxProgress).toFixed(2);
+  }
+
+  private get maxProgress(): number {
     if (this.sortType() === "random") {
       return SONGS.length * Math.ceil(Math.log2(SONGS.length));
     }
@@ -279,10 +283,6 @@ export class AppComponent {
     );
 
     return part1 + part2;
-  }
-
-  protected get progressPercent() {
-    return ((100 * this.progress) / this.maxProgress).toFixed(2);
   }
 
   /* Styling */
