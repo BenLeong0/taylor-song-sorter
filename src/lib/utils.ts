@@ -14,7 +14,7 @@ export function sum(arr: number[]): number {
   return arr.reduce((a, b) => a + b);
 }
 
-export function* binaryPairings(length: number, offset: number = 0) {
+export function* getBinaryPairings(length: number, offset: number = 0) {
   for (let n = 0; n < Math.log2(length); n++) {
     for (let l = offset; l < offset + length; l += 2 ** (n + 1)) {
       const r = l + 2 ** (n + 1);

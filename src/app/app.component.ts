@@ -12,7 +12,7 @@ import {
 import { Menu } from "$lib/components/menu.component";
 import { Settings } from "$lib/components/settings.component";
 import { ALBUMS, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
-import { binaryPairings, shuffleArr } from "$lib/utils";
+import { getBinaryPairings, shuffleArr } from "$lib/utils";
 
 class UnfinishedException extends Error {
   v1: SongEntry[];
@@ -153,7 +153,7 @@ export class AppComponent {
     const his = [...this.history()];
     albumBounds.forEach((bounds) => this.mergesort({ arr, his, bounds }));
 
-    const indexPairings = binaryPairings(ALBUMS.length);
+    const indexPairings = getBinaryPairings(ALBUMS.length);
     for (let { l: lInd, m: mInd, r: rInd } of indexPairings) {
       const l = albumBounds[lInd][0];
       const m = albumBounds[mInd]?.[0] ?? SONGS.length;
@@ -174,7 +174,7 @@ export class AppComponent {
     const { arr, his, bounds } = args;
     const [start, end] = bounds ?? [0, arr.length];
 
-    const pairings = binaryPairings(end - start, start);
+    const pairings = getBinaryPairings(end - start, start);
     for (let { l, m, r: rMax } of pairings) {
       const r = Math.min(end, rMax);
       this.merge({ arr, his, l, m, r });
