@@ -11,7 +11,7 @@ import {
 
 import { Menu } from "$lib/components/menu.component";
 import { Settings } from "$lib/components/settings.component";
-import { ALBUMS, Album, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
+import { ALBUMS, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
 import { getBinaryPairings, shuffleArr, sum } from "$lib/utils";
 
 class UnfinishedException extends Error {
@@ -124,8 +124,8 @@ export class AppComponent {
   /* Sorting */
 
   private sortSongs(): SongResult[] {
-    const sortType = this.sortType();
     this.progress = 0;
+    const sortType = this.sortType();
     const res = sortType === "random" ? this.randomSort() : this.albumSort();
 
     const songs: SongResult[] = res
