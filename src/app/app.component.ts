@@ -11,8 +11,8 @@ import {
 
 import { Menu } from "$lib/components/menu.component";
 import { Settings } from "$lib/components/settings.component";
-import { ALBUMS, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
-import { shuffleArr } from "$lib/utils";
+import { ALBUMS, Album, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
+import { getBinaryPairings, shuffleArr, sum } from "$lib/utils";
 
 class UnfinishedException extends Error {
   v1: SongEntry[];
@@ -57,6 +57,8 @@ export class AppComponent {
   protected readonly restartRequested = signal(false);
   protected readonly seed = signal(1);
   protected readonly sortType = signal<SortType>("byAlbum");
+
+  private progress = 0;
 
   protected readonly started = computed<boolean>(() => {
     return this.history().length > 0;
@@ -123,6 +125,7 @@ export class AppComponent {
 
   private sortSongs(): SongResult[] {
     const sortType = this.sortType();
+    this.progress = 0;
     const res = sortType === "random" ? this.randomSort() : this.albumSort();
 
     const songs: SongResult[] = res
@@ -151,25 +154,14 @@ export class AppComponent {
 
     const arr = SONGS.map((x) => [x]);
     const his = [...this.history()];
-    for (let i = 0; i < albumBounds.length; i++) {
-      const start = albumBounds[i][0];
-      const end = albumBounds[i][1];
-      this.mergesort({ arr, his, start, end });
-    }
+    albumBounds.forEach((bounds) => this.mergesort({ arr, his, bounds }));
 
-    for (let n = 0; n < Math.log2(ALBUMS.length); n++) {
-      for (let lInd = 0; lInd < ALBUMS.length; lInd += 2 ** (n + 1)) {
-        const l = albumBounds[lInd][0];
-
-        const mInd = lInd + 2 ** n;
-        if (mInd >= ALBUMS.length) continue;
-        const m = albumBounds[mInd][0];
-
-        const rInd = mInd + 2 ** n;
-        const r = albumBounds[rInd]?.[0] ?? SONGS.length;
-
-        this.merge({ arr, his, l, m, r });
-      }
+    const indexPairings = getBinaryPairings(ALBUMS.length);
+    for (let { l: lInd, m: mInd, r: rInd } of indexPairings) {
+      const l = albumBounds[lInd][0];
+      const m = albumBounds[mInd]?.[0] ?? SONGS.length;
+      const r = albumBounds[rInd]?.[0] ?? SONGS.length;
+      this.merge({ arr, his, l, m, r });
     }
 
     return arr;
@@ -180,17 +172,15 @@ export class AppComponent {
   private mergesort(args: {
     arr: SongEntry[][];
     his: Selection[];
-    start?: number;
-    end?: number;
+    bounds?: [number, number];
   }) {
-    const { arr, his, start = 0, end = arr.length } = args;
+    const { arr, his, bounds } = args;
+    const [start, end] = bounds ?? [0, arr.length];
 
-    for (let n = 0; n < Math.log2(end); n++) {
-      for (let l = start; l < end; l += 2 ** (n + 1)) {
-        const m = l + 2 ** n;
-        const r = Math.min(m + 2 ** n, end);
-        this.merge({ arr, his, l, m, r });
-      }
+    const pairings = getBinaryPairings(end - start, start);
+    for (let { l, m, r: rMax } of pairings) {
+      const r = Math.min(end, rMax);
+      this.merge({ arr, his, l, m, r });
     }
 
     return arr;
@@ -203,21 +193,23 @@ export class AppComponent {
     r: number;
     m: number;
   }) {
-    const { arr, his, l, m, r } = args;
-    if (m >= r) return;
+    const { arr, his, l } = args;
+    const r = Math.min(args.r, arr.length);
+    const m = Math.min(args.m, r);
 
-    let [p1, p2] = [l, m];
     const newArr: SongEntry[][] = [];
-    while (p1 < m && p2 < r) {
+    let [p1, p2] = [l, m];
+
+    while (p1 < m && p2 < r && p2 < arr.length) {
       const [v1, v2] = [arr[p1], arr[p2]];
       if (v1.length == 0) {
-        p1++;
         newArr.push([]);
+        p1++;
         continue;
       }
       if (v2.length == 0) {
-        p2++;
         newArr.push([]);
+        p2++;
         continue;
       }
 
@@ -225,22 +217,33 @@ export class AppComponent {
         throw new UnfinishedException("not finished!", v1, v2);
       }
 
-      const ans = his.shift();
-      if (ans == "left") {
-        newArr.push(v1);
-        p1++;
-      } else if (ans == "right") {
-        newArr.push(v2);
-        p2++;
-      } else if (ans == "tie") {
-        newArr.push([...v1, ...v2], []);
-        p1++;
-        p2++;
+      const ans = his.shift()!;
+      switch (ans) {
+        case "left":
+          newArr.push(v1);
+          this.progress += v1.length;
+          p1++;
+          break;
+        case "right":
+          newArr.push(v2);
+          this.progress += v2.length;
+          p2++;
+          break;
+        case "tie":
+          newArr.push([...v1, ...v2], []);
+          this.progress += v1.length + v2.length;
+          p1++;
+          p2++;
+          break;
       }
     }
 
     newArr.push(...arr.slice(p1, m));
+    this.progress += m - p1;
+
     newArr.push(...arr.slice(p2, r));
+    this.progress += r - p2;
+
     newArr.forEach((val, ind) => {
       arr[l + ind] = val;
     });
@@ -253,6 +256,33 @@ export class AppComponent {
     const uriType = song.spotifyIsPodcast ? "episode" : "track";
     const url = `${baseUrl}/${uriType}/${song.spotifyId}`;
     return this.sanitiser.bypassSecurityTrustResourceUrl(url);
+  }
+
+  /* Progress */
+
+  protected get progressPercent() {
+    return ((100 * this.progress) / this.maxProgress).toFixed(2);
+  }
+
+  private get maxProgress(): number {
+    if (this.sortType() === "random") {
+      return SONGS.length * Math.ceil(Math.log2(SONGS.length));
+    }
+
+    const albumLengths = ALBUMS.map(
+      (album) => SONGS.filter((song) => song.album === album).length
+    );
+
+    const part1 = sum(
+      albumLengths.map((length) => length * Math.ceil(Math.log2(length)))
+    );
+
+    const pairings = getBinaryPairings(ALBUMS.length);
+    const part2 = sum(
+      [...pairings].map(({ l, r }) => sum(albumLengths.slice(l, r)))
+    );
+
+    return part1 + part2;
   }
 
   /* Styling */
@@ -293,7 +323,8 @@ export class AppComponent {
       ArrowRight: () => this.selectOption("right"),
       Backspace: () => this.undo(),
     } as const;
-    actions[event.key]();
+    const action = actions[event.key];
+    action && action();
   }
 
   /* Local development */
