@@ -15,6 +15,7 @@ import { Settings } from "$lib/components/settings.component";
 import { ALBUMS, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
 import { SongResult } from "$lib/types";
 import { getBinaryPairings, shuffleArr, sum } from "$lib/utils";
+import * as env from "$lib/env";
 
 class UnfinishedException extends Error {
   v1: SongEntry[];
@@ -44,7 +45,8 @@ type PageState = PageStateFinished | PageStateUnfinished;
   templateUrl: "./app.component.html",
 })
 export class AppComponent {
-  protected readonly SHOW_RANDOM_RANKING_OPTION = true;
+  protected readonly SHOW_RANDOM_RANKING_OPTION =
+    env.SHOW_RANDOM_RANKING_OPTION;
 
   private readonly sanitiser = inject(DomSanitizer);
 
@@ -130,7 +132,7 @@ export class AppComponent {
       .map((songRes, i) =>
         songRes
           .map((song) => ({ ...song, rank: i + 1 }))
-          .sort((s1, s2) => (s1.title < s2.title ? -1 : 1)),
+          .sort((s1, s2) => (s1.title < s2.title ? -1 : 1))
       )
       .flat();
 
@@ -267,16 +269,16 @@ export class AppComponent {
     }
 
     const albumLengths = ALBUMS.map(
-      (album) => SONGS.filter((song) => song.album === album).length,
+      (album) => SONGS.filter((song) => song.album === album).length
     );
 
     const part1 = sum(
-      albumLengths.map((length) => length * Math.ceil(Math.log2(length))),
+      albumLengths.map((length) => length * Math.ceil(Math.log2(length)))
     );
 
     const pairings = getBinaryPairings(ALBUMS.length);
     const part2 = sum(
-      [...pairings].map(({ l, r }) => sum(albumLengths.slice(l, r))),
+      [...pairings].map(({ l, r }) => sum(albumLengths.slice(l, r)))
     );
 
     return part1 + part2;
