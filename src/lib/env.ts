@@ -1,1 +1,1 @@
-export const SHOW_RANDOM_RANKING_OPTION = true;
+export const SHOW_RANDOM_RANKING_OPTION = false;
