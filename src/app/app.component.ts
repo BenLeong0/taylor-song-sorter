@@ -20,12 +20,19 @@ import * as env from "$lib/env";
 class UnfinishedException extends Error {
   v1: SongEntry[];
   v2: SongEntry[];
+  progress: string;
 
-  constructor(message: string, v1: SongEntry[], v2: SongEntry[]) {
+  constructor(
+    message: string,
+    v1: SongEntry[],
+    v2: SongEntry[],
+    progress: string
+  ) {
     super(message);
     this.name = this.constructor.name;
     this.v1 = v1;
     this.v2 = v2;
+    this.progress = progress;
   }
 }
 
@@ -34,7 +41,11 @@ type SongOptions = [SongEntry, SongEntry];
 type SortType = "random" | "byAlbum";
 type Selection = "left" | "right" | "tie";
 type PageStateFinished = { finished: true; songs: SongResult[] };
-type PageStateUnfinished = { finished: false; options: SongOptions };
+type PageStateUnfinished = {
+  finished: false;
+  progress: string;
+  options: SongOptions;
+};
 type PageState = PageStateFinished | PageStateUnfinished;
 
 @Component({
@@ -57,8 +68,6 @@ export class AppComponent {
   protected readonly seed = signal(1);
   protected readonly sortType = signal<SortType>("byAlbum");
 
-  private progress = 0;
-
   protected readonly started = computed<boolean>(() => {
     return this.history().length > 0;
   });
@@ -76,12 +85,13 @@ export class AppComponent {
     } catch (e) {
       if (!(e instanceof UnfinishedException)) throw e;
 
+      const progress = e.progress;
       const options: SongOptions = [e.v1[0], e.v2[0]];
-      return { finished: false, options };
+      return { finished: false, progress, options };
     }
   });
 
-  /* Buttons */
+  /* Actions */
 
   public selectOption(option: Selection): void {
     this.restartRequested.set(false);
@@ -123,29 +133,22 @@ export class AppComponent {
   /* Sorting */
 
   private sortSongs(): SongResult[] {
-    this.progress = 0;
     const sortType = this.sortType();
     const res = sortType === "random" ? this.randomSort() : this.albumSort();
 
-    const songs: SongResult[] = res
-      .slice(res.findIndex((x) => x.length > 0))
-      .map((songRes, i) =>
-        songRes
-          .map((song) => ({ ...song, rank: i + 1 }))
-          .sort((s1, s2) => (s1.title < s2.title ? -1 : 1))
-      )
-      .flat();
-
-    return songs;
+    const ranking = this.assignRanks(res);
+    return ranking;
   }
 
   private randomSort() {
     const arr = shuffleArr(SONGS, this.seed()).map((x) => [x]);
     const his = [...this.history()];
-    return this.mergesort({ arr, his });
+    return this.mergesort({ songs: arr, his, progress: 0 }).songs;
   }
 
   private albumSort() {
+    let progress = 0;
+
     const albumBounds = ALBUMS.map<[number, number]>((album) => [
       SONGS.findIndex((song) => song.album === album),
       SONGS.findLastIndex((song) => song.album === album) + 1,
@@ -153,54 +156,71 @@ export class AppComponent {
 
     const arr = SONGS.map((x) => [x]);
     const his = [...this.history()];
-    albumBounds.forEach((bounds) => this.mergesort({ arr, his, bounds }));
+    albumBounds.forEach((bounds) => {
+      const res = this.mergesort({ songs: arr, his, bounds, progress });
+      progress = res.progress;
+    });
 
     const indexPairings = getBinaryPairings(ALBUMS.length);
     for (let { l: lInd, m: mInd, r: rInd } of indexPairings) {
       const l = albumBounds[lInd][0];
       const m = albumBounds[mInd]?.[0] ?? SONGS.length;
       const r = albumBounds[rInd]?.[0] ?? SONGS.length;
-      this.merge({ arr, his, l, m, r });
+      const res = this.merge({ songs: arr, his, l, m, r, progress });
+      progress = res.progress;
     }
 
     return arr;
+  }
+
+  private assignRanks(sortResult: SongEntry[][]): SongResult[] {
+    return sortResult
+      .map((songRes, i) => songRes.map((song) => ({ ...song, rank: i + 1 })))
+      .map((rank) => rank.sort((s1, s2) => (s1.title < s2.title ? -1 : 1)))
+      .flat();
   }
 
   /* Merging */
 
   private mergesort(args: {
-    arr: SongEntry[][];
+    songs: SongEntry[][];
     his: Selection[];
+    progress: number;
     bounds?: [number, number];
-  }) {
-    const { arr, his, bounds } = args;
-    const [start, end] = bounds ?? [0, arr.length];
+  }): { songs: SongEntry[][]; progress: number } {
+    const { songs, his, bounds } = args;
+    const [start, end] = bounds ?? [0, songs.length];
+    let progress = args.progress;
 
     const pairings = getBinaryPairings(end - start, start);
     for (let { l, m, r: rMax } of pairings) {
       const r = Math.min(end, rMax);
-      this.merge({ arr, his, l, m, r });
+      const res = this.merge({ songs, his, l, m, r, progress });
+      progress = res.progress;
     }
 
-    return arr;
+    return { songs, progress };
   }
 
   private merge(args: {
-    arr: SongEntry[][];
+    songs: SongEntry[][];
     his: Selection[];
     l: number;
     r: number;
     m: number;
-  }) {
-    const { arr, his, l } = args;
-    const r = Math.min(args.r, arr.length);
+    progress: number;
+  }): { progress: number } {
+    const { songs, his, l } = args;
+    let progress = args.progress;
+
+    const r = Math.min(args.r, songs.length);
     const m = Math.min(args.m, r);
 
     const newArr: SongEntry[][] = [];
     let [p1, p2] = [l, m];
 
-    while (p1 < m && p2 < r && p2 < arr.length) {
-      const [v1, v2] = [arr[p1], arr[p2]];
+    while (p1 < m && p2 < r && p2 < songs.length) {
+      const [v1, v2] = [songs[p1], songs[p2]];
       if (v1.length == 0) {
         newArr.push([]);
         p1++;
@@ -213,39 +233,43 @@ export class AppComponent {
       }
 
       if (his.length == 0) {
-        throw new UnfinishedException("not finished!", v1, v2);
+        const sortType = this.sortType();
+        const progressPercent = this.getProgressPercent(progress, sortType);
+        throw new UnfinishedException("not finished!", v1, v2, progressPercent);
       }
 
       const ans = his.shift()!;
       switch (ans) {
         case "left":
           newArr.push(v1);
-          this.progress += v1.length;
+          progress += v1.length;
           p1++;
           break;
         case "right":
           newArr.push(v2);
-          this.progress += v2.length;
+          progress += v2.length;
           p2++;
           break;
         case "tie":
           newArr.push([...v1, ...v2], []);
-          this.progress += v1.length + v2.length;
+          progress += v1.length + v2.length;
           p1++;
           p2++;
           break;
       }
     }
 
-    newArr.push(...arr.slice(p1, m));
-    this.progress += m - p1;
+    newArr.push(...songs.slice(p1, m));
+    progress += m - p1;
 
-    newArr.push(...arr.slice(p2, r));
-    this.progress += r - p2;
+    newArr.push(...songs.slice(p2, r));
+    progress += r - p2;
 
     newArr.forEach((val, ind) => {
-      arr[l + ind] = val;
+      songs[l + ind] = val;
     });
+
+    return { progress };
   }
 
   /* Spotify */
@@ -259,29 +283,31 @@ export class AppComponent {
 
   /* Progress */
 
-  protected get progressPercent() {
-    return ((100 * this.progress) / this.maxProgress).toFixed(2);
+  protected getProgressPercent(progress: number, sortType: SortType): string {
+    return ((100 * progress) / this.getMaxProgress(sortType)).toFixed(2);
   }
 
-  private get maxProgress(): number {
-    if (this.sortType() === "random") {
-      return SONGS.length * Math.ceil(Math.log2(SONGS.length));
+  private getMaxProgress(sortType: SortType): number {
+    switch (sortType) {
+      case "random":
+        return SONGS.length * Math.ceil(Math.log2(SONGS.length));
+
+      case "byAlbum":
+        const albumLengths = ALBUMS.map(
+          (album) => SONGS.filter((song) => song.album === album).length
+        );
+
+        const part1 = sum(
+          albumLengths.map((length) => length * Math.ceil(Math.log2(length)))
+        );
+
+        const pairings = getBinaryPairings(ALBUMS.length);
+        const part2 = sum(
+          [...pairings].map(({ l, r }) => sum(albumLengths.slice(l, r)))
+        );
+
+        return part1 + part2;
     }
-
-    const albumLengths = ALBUMS.map(
-      (album) => SONGS.filter((song) => song.album === album).length
-    );
-
-    const part1 = sum(
-      albumLengths.map((length) => length * Math.ceil(Math.log2(length)))
-    );
-
-    const pairings = getBinaryPairings(ALBUMS.length);
-    const part2 = sum(
-      [...pairings].map(({ l, r }) => sum(albumLengths.slice(l, r)))
-    );
-
-    return part1 + part2;
   }
 
   /* Styling */
@@ -329,6 +355,15 @@ export class AppComponent {
   /* Local development */
 
   public fillHistory(): void {
-    this.history.set(this.history().concat(new Array(1028).fill("left")));
+    this.history.set([]);
+    while (true) {
+      try {
+        this.sortSongs();
+        break;
+      } catch {
+        const choice = Math.floor(2 * Math.random()) ? "left" : "right";
+        this.history.update((h) => [...h, choice]);
+      }
+    }
   }
 }
