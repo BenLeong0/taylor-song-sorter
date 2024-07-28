@@ -1,12 +1,5 @@
 import { CommonModule } from "@angular/common";
-import {
-  Component,
-  EventEmitter,
-  Output,
-  ModelSignal,
-  signal,
-  model,
-} from "@angular/core";
+import { Component, EventEmitter, Output, model } from "@angular/core";
 
 @Component({
   selector: "app-menu",

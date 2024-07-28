@@ -5,18 +5,7 @@
       @if (state.finished) {
         <h3>Done! See your results below :)</h3>
         <app-menu (undo)="undo()" (restart)="confirmRestart()" />
-        <table>
-          <tr class="row-header">
-            <td>Rank</td>
-            <td>Title</td>
-          </tr>
-          @for (song of state.songs; track song.title) {
-            <tr>
-              <td class="col-rank">{{ song.rank }}</td>
-              <td>{{ song.title }}</td>
-            </tr>
-          }
-        </table>
+        <app-ranking [songs]="state.songs" />
         <app-menu
           *ngIf="started()"
           (undo)="undo()"

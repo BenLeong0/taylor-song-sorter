@@ -10,8 +10,10 @@ import {
 } from "@angular/core";
 
 import { Menu } from "$lib/components/menu.component";
+import { Ranking } from "$lib/components/ranking.component";
 import { Settings } from "$lib/components/settings.component";
 import { ALBUMS, COLOURS, SONGS, type SongEntry } from "$lib/data/songs";
+import { SongResult } from "$lib/types";
 import { getBinaryPairings, shuffleArr, sum } from "$lib/utils";
 
 class UnfinishedException extends Error {
@@ -26,11 +28,6 @@ class UnfinishedException extends Error {
   }
 }
 
-type SongResult = {
-  title: string;
-  album: string;
-  rank: number;
-};
 type SongOptions = [SongEntry, SongEntry];
 
 type SortType = "random" | "byAlbum";
@@ -42,7 +39,7 @@ type PageState = PageStateFinished | PageStateUnfinished;
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [CommonModule, Menu, Settings],
+  imports: [CommonModule, Menu, Ranking, Settings],
   styleUrl: "./app.component.css",
   templateUrl: "./app.component.html",
 })
@@ -133,7 +130,7 @@ export class AppComponent {
       .map((songRes, i) =>
         songRes
           .map((song) => ({ ...song, rank: i + 1 }))
-          .sort((s1, s2) => (s1.title < s2.title ? -1 : 1))
+          .sort((s1, s2) => (s1.title < s2.title ? -1 : 1)),
       )
       .flat();
 
@@ -270,16 +267,16 @@ export class AppComponent {
     }
 
     const albumLengths = ALBUMS.map(
-      (album) => SONGS.filter((song) => song.album === album).length
+      (album) => SONGS.filter((song) => song.album === album).length,
     );
 
     const part1 = sum(
-      albumLengths.map((length) => length * Math.ceil(Math.log2(length)))
+      albumLengths.map((length) => length * Math.ceil(Math.log2(length))),
     );
 
     const pairings = getBinaryPairings(ALBUMS.length);
     const part2 = sum(
-      [...pairings].map(({ l, r }) => sum(albumLengths.slice(l, r)))
+      [...pairings].map(({ l, r }) => sum(albumLengths.slice(l, r))),
     );
 
     return part1 + part2;
