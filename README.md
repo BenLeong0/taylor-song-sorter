@@ -9,6 +9,15 @@ Access here: https://benleong0.github.io/taylor-song-sorter/
 - [x] Spotify preview
 - [ ] WWHD
 - [ ] Tailwind
+- [ ] Versioning (to allow breaking updates)
+- [ ] Results page
+  - [ ] Save + share
+  - [ ] Insights
+    - [ ] Group by album
+    - [ ] Average album rank
+  - [ ] Compare
+    - [ ] Rank differentials
+    - [ ] Biggest rank diff
 - [x] Progress %
   - Especially hard to do when going album-by-album - maybe just add for random order
 - [ ] Songs that aren't on main albums (as a optional setting)
