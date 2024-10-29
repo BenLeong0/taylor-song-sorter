@@ -12,7 +12,6 @@ export const v1Routes: Routes = [
     path: "results",
     component: ResultsComponent,
   },
-
   {
     path: "share/:rankingId",
     component: ShareComponent,
