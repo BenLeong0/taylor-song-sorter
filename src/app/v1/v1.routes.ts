@@ -1,7 +1,7 @@
 import { Routes } from "@angular/router";
 import { SortComponent } from "./sort/sort.component";
 import { ResultsComponent } from "./results/results.component";
-import { RankingComponent } from "./ranking/ranking.component";
+import { ShareComponent } from "./share/share.component";
 
 export const v1Routes: Routes = [
   {
@@ -15,6 +15,6 @@ export const v1Routes: Routes = [
 
   {
     path: "share/:rankingId",
-    component: RankingComponent,
+    component: ShareComponent,
   },
 ];
