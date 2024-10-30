@@ -1,0 +1,91 @@
+<div class="wrapper">
+  <div class="content">
+    <h1>Taylor Swift Song Sorter</h1>
+    @if (sortingService.sortResult(); as sortResult) {
+      @if (sortResult.complete) {
+        <h3>Done! See your results below :)</h3>
+        <app-menu
+          (undo)="undo()"
+          (restart)="confirmRestart()"
+          [(restartRequested)]="restartRequested"
+        />
+        <app-ranking [ranking]="sortResult.ranking" />
+        <app-menu
+          *ngIf="sortingService.started()"
+          (undo)="undo()"
+          (restart)="confirmRestart()"
+        />
+      } @else {
+        <div class="intro-text">
+          dear reader: try to avoid using the middle options, as overuse will
+          lower the quality of the results
+        </div>
+        <h3>Decision #{{ sortingService.numDecisionsMade() + 1 }}</h3>
+        <div>Progress: {{ sortResult.percentDone }}%</div>
+        <div class="options">
+          <div
+            class="option option-main"
+            [style]="getOptionStyle(sortResult.options[0])"
+            (click)="selectOption('left')"
+          >
+            <p class="song-title">{{ sortResult.options[0].title }}</p>
+            <p class="album">{{ sortResult.options[0].album }}</p>
+          </div>
+          <div class="ties-container">
+            <div class="option option-tie" (click)="selectOption('tie')">
+              <p>tie</p>
+            </div>
+            <div class="option option-tie" (click)="selectOption('tie')">
+              <p>no opinion</p>
+            </div>
+          </div>
+          <div
+            class="option option-main"
+            [style]="getOptionStyle(sortResult.options[1])"
+            (click)="selectOption('right')"
+          >
+            <p class="song-title">{{ sortResult.options[1].title }}</p>
+            <p class="album">{{ sortResult.options[1].album }}</p>
+          </div>
+        </div>
+        <app-menu
+          *ngIf="sortingService.started()"
+          (undo)="undo()"
+          (restart)="confirmRestart()"
+          [(restartRequested)]="restartRequested"
+        />
+        <app-settings
+          *ngIf="!sortingService.started()"
+          (byAlbum)="sortingService.selectSortType('byAlbum')"
+          (randomise)="sortingService.selectSortType('random')"
+        />
+        <div
+          *ngIf="SHOW_RANDOM_RANKING_OPTION"
+          class="menu-option"
+          (click)="sortingService.fillHistory()"
+        >
+          generate fake ranking
+        </div>
+
+        <!-- <div class="spotify-players">
+          <iframe
+            [src]="getSpotifyLink(sortResult.options[0])"
+            width="300"
+            height="80"
+            frameborder="0"
+            allowtransparency="true"
+            allow="encrypted-media"
+          ></iframe>
+          <iframe
+            [src]="getSpotifyLink(sortResult.options[1])"
+            width="300"
+            height="80"
+            frameborder="0"
+            allowtransparency="true"
+            allow="encrypted-media"
+          ></iframe>
+        </div> -->
+      }
+    }
+  </div>
+</div>

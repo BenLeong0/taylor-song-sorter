@@ -1,6 +1,6 @@
 import { SongResult } from "$lib/types";
 import { CommonModule } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { Component, input } from "@angular/core";
 
 @Component({
   selector: "app-ranking",
@@ -13,7 +13,7 @@ import { Component, Input } from "@angular/core";
         <td>Rank</td>
         <td>Title</td>
       </tr>
-      @for (song of songs; track song.title) {
+      @for (song of ranking(); track song.title) {
         <tr>
           <td class="col-rank">{{ song.rank }}</td>
           <td>{{ song.title }}</td>
@@ -23,5 +23,5 @@ import { Component, Input } from "@angular/core";
   `,
 })
 export class Ranking {
-  @Input({ required: true }) public songs!: SongResult[];
+  public readonly ranking = input.required<SongResult[]>();
 }

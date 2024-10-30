@@ -14,7 +14,7 @@ import { Component, EventEmitter, Output, model } from "@angular/core";
       @if (restartRequested()) {
         <div
           class="menu-option"
-          style="font-weight: bold"
+          style="text-align: left; font-weight: bold"
           (click)="confirmRestart()"
         >
           are you sure?
@@ -42,7 +42,6 @@ export class Menu {
   }
 
   public confirmRestart(): void {
-    this.restartRequested.set(false);
     this.restart.emit();
   }
 }
