@@ -2,7 +2,6 @@ import { computed, Injectable, signal } from "@angular/core";
 
 import { ALBUMS, SONGS, type SongEntry } from "./songs-v1";
 import { getBinaryPairings, shuffleArr, sum } from "$lib/utils";
-import { convert3to81 } from "$lib/encoding";
 import { SongResult } from "$lib/types";
 
 export type SortType = "random" | "byAlbum";
