@@ -1,21 +1,5 @@
-.menu-title {
-  text-align: center;
-  font-weight: bolder;
-  margin-bottom: 5px;
-}
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Slab:ital,wght@0,100..700");
 
-.menu-options {
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-}
-
-.menu-option {
-  width: 150px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.menu-option:hover {
-  text-decoration: underline;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

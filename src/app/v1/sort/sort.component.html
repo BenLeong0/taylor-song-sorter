@@ -1,0 +1,113 @@
+<div
+  class="font-serif h-full w-full max-w-[1000px] mx-auto mt-40 flex justify-end items-center"
+>
+  <div class="w-full flex flex-col justify-between items-center gap-[8px]">
+    <h1 class="text-32 font-bold mb-5 text-center">Taylor Swift Song Sorter</h1>
+    @if (sortingService.sortResult(); as sortResult) {
+      @if (sortResult.complete) {
+        <h3 class="text-20 text-center font-bold">
+          Done! See your results below :)
+        </h3>
+        <app-menu
+          (undo)="undo()"
+          (restart)="confirmRestart()"
+          [(restartRequested)]="restartRequested"
+        />
+        <app-ranking [ranking]="sortResult.ranking" />
+        <app-menu
+          *ngIf="sortingService.started()"
+          (undo)="undo()"
+          (restart)="confirmRestart()"
+        />
+      } @else {
+        <div class="text-12 mb-10 text-center">
+          dear reader: try to avoid using the middle options, as overuse will
+          lower the quality of the results
+        </div>
+        <h3 class="text-20 text-center font-bold">
+          Decision #{{ sortingService.numDecisionsMade() + 1 }}
+        </h3>
+        <div class="text-16">Progress: {{ sortResult.percentDone }}%</div>
+        <div
+          class="flex flex-row gap-[4px] h-[150px] mb-20 w-full max-w-[500px]"
+        >
+          <div
+            class="cursor-pointer text-center items-center content-center border border-black select-none flex-grow break-words w-2/5"
+            [style]="getOptionStyle(sortResult.options[0])"
+            (click)="selectOption('left')"
+          >
+            <p class="px-5 my-5 text-20">
+              {{ sortResult.options[0].title }}
+            </p>
+            <p class="px-5 my-5 text-12">
+              {{ sortResult.options[0].album }}
+            </p>
+          </div>
+          <div class="grid gap-[4px] h-full w-1/4">
+            <div
+              class="cursor-pointer text-center items-center content-center border border-black select-none flex-grow break-words"
+              (click)="selectOption('tie')"
+            >
+              <p>tie</p>
+            </div>
+            <div
+              class="cursor-pointer text-center items-center content-center border border-black select-none flex-grow break-words"
+              (click)="selectOption('tie')"
+            >
+              <p>no opinion</p>
+            </div>
+          </div>
+          <div
+            class="cursor-pointer text-center items-center content-center border border-black select-none flex-grow break-words w-2/5"
+            [style]="getOptionStyle(sortResult.options[1])"
+            (click)="selectOption('right')"
+          >
+            <p class="px-5 my-5 text-20">
+              {{ sortResult.options[1].title }}
+            </p>
+            <p class="px-5 my-5 text-12">
+              {{ sortResult.options[1].album }}
+            </p>
+          </div>
+        </div>
+        <app-menu
+          *ngIf="sortingService.started()"
+          (undo)="undo()"
+          (restart)="confirmRestart()"
+          [(restartRequested)]="restartRequested"
+        />
+        <app-settings
+          *ngIf="!sortingService.started()"
+          (byAlbum)="sortingService.selectSortType('byAlbum')"
+          (randomise)="sortingService.selectSortType('random')"
+        />
+        <div
+          *ngIf="SHOW_RANDOM_RANKING_OPTION"
+          class="w-[150px] cursor-pointer select-none hover:underline text-16"
+          (click)="sortingService.fillHistory()"
+        >
+          generate fake ranking
+        </div>
+
+        <!-- <div class="flex flex-col gap-[4px] mt-10">
+          <iframe
+            [src]="getSpotifyLink(sortResult.options[0])"
+            width="300"
+            height="80"
+            frameborder="0"
+            allowtransparency="true"
+            allow="encrypted-media"
+          ></iframe>
+          <iframe
+            [src]="getSpotifyLink(sortResult.options[1])"
+            width="300"
+            height="80"
+            frameborder="0"
+            allowtransparency="true"
+            allow="encrypted-media"
+          ></iframe>
+        </div> -->
+      }
+    }
+  </div>
+</div>

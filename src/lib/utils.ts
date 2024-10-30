@@ -11,7 +11,7 @@ export function shuffleArr<T>(arr: T[], seed: number): T[] {
 }
 
 export function sum(arr: number[]): number {
-  return arr.reduce((a, b) => a + b);
+  return arr.reduce((a, b) => a + b, 0);
 }
 
 export function* getBinaryPairings(length: number, offset: number = 0) {
