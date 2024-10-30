@@ -5,18 +5,21 @@ import { Component, input } from "@angular/core";
 @Component({
   selector: "app-ranking",
   standalone: true,
-  styleUrl: "./ranking.component.css",
   imports: [CommonModule],
   template: `
-    <table>
-      <tr class="row-header">
-        <td>Rank</td>
-        <td>Title</td>
+    <table class="border-collapse text-16">
+      <tr class="font-bold text-center">
+        <td class="border border-black py-[4px] px-[6px]">Rank</td>
+        <td class="border border-black py-[4px] px-[6px]">Title</td>
       </tr>
       @for (song of ranking(); track song.title) {
         <tr>
-          <td class="col-rank">{{ song.rank }}</td>
-          <td>{{ song.title }}</td>
+          <td class="border border-black py-[4px] px-[6px] text-center">
+            {{ song.rank }}
+          </td>
+          <td class="border border-black py-[4px] px-[6px]">
+            {{ song.title }}
+          </td>
         </tr>
       }
     </table>

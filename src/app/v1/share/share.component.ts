@@ -1,12 +1,9 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-share',
+  selector: "app-share",
   standalone: true,
   imports: [],
-  templateUrl: './share.component.html',
-  styleUrl: './share.component.css'
+  templateUrl: "./share.component.html",
 })
-export class ShareComponent {
-
-}
+export class ShareComponent {}
