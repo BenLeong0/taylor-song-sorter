@@ -6,23 +6,24 @@ import { Component, EventEmitter, Output, model } from "@angular/core";
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="menu-options">
-      <div class="menu-option" style="text-align: right" (click)="undo.emit()">
+    <div class="flex flex-row gap-[5px] text-16">
+      <div
+        class="w-[150px] cursor-pointer select-none text-right hover:underline"
+        (click)="undo.emit()"
+      >
         undo previous
       </div>
       <div>|</div>
       @if (restartRequested()) {
         <div
-          class="menu-option"
-          style="text-align: left; font-weight: bold"
+          class="w-[150px] cursor-pointer select-none text-left font-bold hover:underline"
           (click)="confirmRestart()"
         >
           are you sure?
         </div>
       } @else {
         <div
-          class="menu-option"
-          style="text-align: left"
+          class="w-[150px] cursor-pointer select-none text-left hover:underline"
           (click)="requestRestart()"
         >
           restart ranking

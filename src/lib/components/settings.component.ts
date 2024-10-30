@@ -6,19 +6,17 @@ import { Component, EventEmitter, Output } from "@angular/core";
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="menu-title">ranking order</div>
-    <div class="menu-options">
+    <div class="text-16 text-center font-extrabold mb-5">ranking order</div>
+    <div class="text-16 flex flex-row gap-[5px]">
       <div
-        class="menu-option"
-        style="text-align: right"
+        class="w-[150px] cursor-pointer select-none text-right hover:underline"
         (click)="byAlbum.emit()"
       >
         album by album
       </div>
       <div>|</div>
       <div
-        class="menu-option"
-        style="text-align: left"
+        class="w-[150px] cursor-pointer select-none text-left hover:underline"
         (click)="randomise.emit()"
       >
         randomised order

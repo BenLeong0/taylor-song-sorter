@@ -14,7 +14,6 @@ import { SortingV1Service, type Selection } from "../sorting-v1.service";
   standalone: true,
   imports: [CommonModule, Menu, Ranking, Settings],
   templateUrl: "./sort.component.html",
-  styleUrl: "./sort.component.css",
 })
 export class SortComponent {
   public log = console.log;
