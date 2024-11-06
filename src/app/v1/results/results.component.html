@@ -1,1 +1,19 @@
-<p>results works!</p>
+<app-page-container>
+  <!-- use @let instead w angular 18 -->
+  @if (sortResult()!; as sortResult) {
+    <h3 class="text-20 text-center font-bold">
+      Done! See your results below :)
+    </h3>
+    <app-menu
+      (undo)="undo()"
+      (restart)="confirmRestart()"
+      [(restartRequested)]="restartRequested"
+    />
+    <app-ranking [ranking]="sortResult.ranking" />
+    <app-menu
+      *ngIf="sortingService.started()"
+      (undo)="undo()"
+      (restart)="confirmRestart()"
+    />
+  }
+</app-page-container>

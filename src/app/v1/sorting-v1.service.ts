@@ -50,6 +50,7 @@ export class SortingV1Service {
   }
   public restart() {
     this.history.set([]);
+    this.clearLocalStorage();
     this.randomiseSeed();
   }
 
@@ -250,6 +251,13 @@ export class SortingV1Service {
     localStorage.setItem("history", JSON.stringify(this.history()));
     localStorage.setItem("seed", this.seed().toString());
     localStorage.setItem("sortType", this.sortType().toString());
+  }
+
+  public clearLocalStorage() {
+    localStorage.removeItem("version");
+    localStorage.removeItem("history");
+    localStorage.removeItem("seed");
+    localStorage.removeItem("sortType");
   }
 
   public loadFromLocalStorage() {

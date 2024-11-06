@@ -1,6 +1,13 @@
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { CommonModule } from "@angular/common";
-import { Component, HostListener, effect, inject, signal } from "@angular/core";
+import {
+  Component,
+  HostListener,
+  computed,
+  effect,
+  inject,
+  signal,
+} from "@angular/core";
 
 import { Menu } from "$lib/components/menu.component";
 import { Ranking } from "$lib/components/ranking.component";
@@ -8,17 +15,18 @@ import { Settings } from "$lib/components/settings.component";
 import * as env from "$lib/env";
 import { COLOURS, type SongEntry } from "../songs-v1";
 import { SortingV1Service, type Selection } from "../sorting-v1.service";
+import { PageContainerComponent } from "../shared/page-container/page-container.component";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-sort",
   standalone: true,
-  imports: [CommonModule, Menu, Ranking, Settings],
+  imports: [CommonModule, Menu, PageContainerComponent, Ranking, Settings],
   templateUrl: "./sort.component.html",
 })
 export class SortComponent {
-  public log = console.log;
-
   protected readonly sortingService = inject(SortingV1Service);
+  private readonly router = inject(Router);
   private readonly sanitiser = inject(DomSanitizer);
 
   protected readonly SHOW_RANDOM_RANKING_OPTION =
@@ -32,7 +40,13 @@ export class SortComponent {
     this.sortingService.randomiseSeed();
     this.sortingService.loadFromLocalStorage();
     effect(() => this.sortingService.saveToLocalStorage());
+    effect(() => this.redirectWhenComplete());
   }
+
+  public readonly sortResult = computed(() => {
+    const sortResult = this.sortingService.sortResult();
+    return sortResult.complete ? null : sortResult;
+  });
 
   /* Buttons */
 
@@ -75,12 +89,19 @@ export class SortComponent {
     return `background-color: ${COLOURS[song.album]}40`;
   }
 
+  /* Complete */
+
+  private redirectWhenComplete(): void {
+    const sortResult = this.sortingService.sortResult();
+    if (sortResult.complete) {
+      this.router.navigateByUrl("v1/results");
+    }
+  }
+
   /* Hotkeys */
 
   @HostListener("window:keydown", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (this.sortingService.sortResult().complete) return;
-
     const actions: Record<string, VoidFunction> = {
       ArrowUp: () => this.selectOption("tie"),
       ArrowDown: () => this.selectOption("tie"),
