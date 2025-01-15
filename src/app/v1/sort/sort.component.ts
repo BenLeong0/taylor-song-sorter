@@ -1,4 +1,6 @@
-import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
+import { Menu } from "$lib/components/menu.component";
+import { Settings } from "$lib/components/settings.component";
+import * as env from "$lib/env";
 import { CommonModule } from "@angular/common";
 import {
   Component,
@@ -8,20 +10,17 @@ import {
   inject,
   signal,
 } from "@angular/core";
-
-import { Menu } from "$lib/components/menu.component";
-import { Ranking } from "$lib/components/ranking.component";
-import { Settings } from "$lib/components/settings.component";
-import * as env from "$lib/env";
-import { COLOURS, type SongEntry } from "../songs-v1";
-import { SortingV1Service, type Selection } from "../sorting-v1.service";
-import { PageContainerComponent } from "../shared/page-container/page-container.component";
+import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { Router } from "@angular/router";
+
+import { PageContainerComponent } from "../shared/page-container/page-container.component";
+import { COLOURS, type SongEntry } from "../songs-v1";
+import { type Selection, SortingV1Service } from "../sorting-v1.service";
 
 @Component({
   selector: "app-sort",
   standalone: true,
-  imports: [CommonModule, Menu, PageContainerComponent, Ranking, Settings],
+  imports: [CommonModule, Menu, PageContainerComponent, Settings],
   templateUrl: "./sort.component.html",
 })
 export class SortComponent {
