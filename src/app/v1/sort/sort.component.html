@@ -1,90 +1,88 @@
 <app-page-container>
-  <!-- use @let instead w angular 18 -->
-  @if (sortResult()!; as sortResult) {
-    <div class="text-12 mb-10 text-center">
-      dear reader: try to avoid using the middle options, as overuse will lower
-      the quality of the results
-    </div>
-    <h3 class="text-20 text-center font-bold">
-      Decision #{{ sortingService.numDecisionsMade() + 1 }}
-    </h3>
-    <div class="text-16 mb-5">Progress: {{ sortResult.percentDone }}%</div>
-    <div class="flex flex-row gap-[4px] h-[150px] mb-20 w-full max-w-[500px]">
-      <div
-        class="cursor-pointer text-center items-center content-center border border-black select-none flex-grow break-words w-2/5"
-        [style]="getOptionStyle(sortResult.options[0])"
-        (click)="selectOption('left')"
-      >
-        <p class="px-5 my-5 text-20">
-          {{ sortResult.options[0].title }}
-        </p>
-        <p class="px-5 my-5 text-12">
-          {{ sortResult.options[0].album }}
-        </p>
-      </div>
-      <div class="grid gap-[4px] h-full w-1/4">
-        <div
-          class="cursor-pointer text-center items-center content-center border border-black select-none flex-grow break-words"
-          (click)="selectOption('tie')"
-        >
-          <p>tie</p>
-        </div>
-        <div
-          class="cursor-pointer text-center items-center content-center border border-black select-none flex-grow break-words"
-          (click)="selectOption('tie')"
-        >
-          <p>no opinion</p>
-        </div>
-      </div>
-      <div
-        class="cursor-pointer text-center items-center content-center border border-black select-none flex-grow break-words w-2/5"
-        [style]="getOptionStyle(sortResult.options[1])"
-        (click)="selectOption('right')"
-      >
-        <p class="px-5 my-5 text-20">
-          {{ sortResult.options[1].title }}
-        </p>
-        <p class="px-5 my-5 text-12">
-          {{ sortResult.options[1].album }}
-        </p>
-      </div>
-    </div>
-    <app-menu
-      *ngIf="sortingService.started()"
-      (undo)="undo()"
-      (restart)="confirmRestart()"
-      [(restartRequested)]="restartRequested"
-    />
-    <app-settings
-      *ngIf="!sortingService.started()"
-      (byAlbum)="sortingService.selectSortType('byAlbum')"
-      (randomise)="sortingService.selectSortType('random')"
-    />
+  @let sortResult_ = sortResult()!;
+  <div class="mb-10 text-center text-12">
+    dear reader: try to avoid using the middle options, as overuse will lower
+    the quality of the results
+  </div>
+  <h3 class="text-center text-20 font-bold">
+    Decision #{{ sortingService.numDecisionsMade() + 1 }}
+  </h3>
+  <div class="mb-5 text-16">Progress: {{ sortResult_.percentDone }}%</div>
+  <div class="mb-20 flex h-[150px] w-full max-w-[500px] flex-row gap-[4px]">
     <div
-      *ngIf="SHOW_RANDOM_RANKING_OPTION"
-      class="w-[200px] cursor-pointer select-none hover:underline text-16 text-center"
-      (click)="sortingService.fillHistory()"
+      class="w-2/5 flex-grow cursor-pointer select-none content-center items-center break-words border border-black text-center"
+      [style]="getOptionStyle(sortResult_.options[0])"
+      (click)="selectOption('left')"
     >
-      generate fake ranking
+      <p class="my-5 px-5 text-20">
+        {{ sortResult_.options[0].title }}
+      </p>
+      <p class="my-5 px-5 text-12">
+        {{ sortResult_.options[0].album }}
+      </p>
     </div>
+    <div class="grid h-full w-1/4 gap-[4px]">
+      <div
+        class="flex-grow cursor-pointer select-none content-center items-center break-words border border-black text-center"
+        (click)="selectOption('tie')"
+      >
+        <p>tie</p>
+      </div>
+      <div
+        class="flex-grow cursor-pointer select-none content-center items-center break-words border border-black text-center"
+        (click)="selectOption('tie')"
+      >
+        <p>no opinion</p>
+      </div>
+    </div>
+    <div
+      class="w-2/5 flex-grow cursor-pointer select-none content-center items-center break-words border border-black text-center"
+      [style]="getOptionStyle(sortResult_.options[1])"
+      (click)="selectOption('right')"
+    >
+      <p class="my-5 px-5 text-20">
+        {{ sortResult_.options[1].title }}
+      </p>
+      <p class="my-5 px-5 text-12">
+        {{ sortResult_.options[1].album }}
+      </p>
+    </div>
+  </div>
+  <app-menu
+    *ngIf="sortingService.started()"
+    (undo)="undo()"
+    (restart)="confirmRestart()"
+    [(restartRequested)]="restartRequested"
+  />
+  <app-settings
+    *ngIf="!sortingService.started()"
+    (byAlbum)="sortingService.selectSortType('byAlbum')"
+    (randomise)="sortingService.selectSortType('random')"
+  />
+  <div
+    *ngIf="SHOW_RANDOM_RANKING_OPTION"
+    class="w-[200px] cursor-pointer select-none text-center text-16 hover:underline"
+    (click)="sortingService.fillHistory()"
+  >
+    generate fake ranking
+  </div>
 
-    <!-- <div class="flex flex-col gap-[4px] mt-10">
-      <iframe
-        [src]="getSpotifyLink(sortResult.options[0])"
-        width="300"
-        height="80"
-        frameborder="0"
-        allowtransparency="true"
-        allow="encrypted-media"
-      ></iframe>
-      <iframe
-        [src]="getSpotifyLink(sortResult.options[1])"
-        width="300"
-        height="80"
-        frameborder="0"
-        allowtransparency="true"
-        allow="encrypted-media"
-      ></iframe>
-    </div> -->
-  }
+  <!-- <div class="flex flex-col gap-[4px] mt-10">
+    <iframe
+      [src]="getSpotifyLink(sortResult_.options[0])"
+      width="300"
+      height="80"
+      frameborder="0"
+      allowtransparency="true"
+      allow="encrypted-media"
+    ></iframe>
+    <iframe
+      [src]="getSpotifyLink(sortResult_.options[1])"
+      width="300"
+      height="80"
+      frameborder="0"
+      allowtransparency="true"
+      allow="encrypted-media"
+    ></iframe>
+  </div> -->
 </app-page-container>

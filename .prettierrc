@@ -1,0 +1,15 @@
+{
+  "quoteProps": "preserve",
+  "plugins": [
+    "angular-html-parser",
+    "prettier-plugin-tailwindcss",
+    "@trivago/prettier-plugin-sort-imports"
+  ],
+  "tailwindFunctions": ["clsx"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "importOrderParserPlugins": ["typescript", "decorators-legacy"],
+  "importOrder": ["^[app|./]"],
+  "tabWidth": 2,
+  "useTabs": false
+}
