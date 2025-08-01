@@ -26,6 +26,10 @@ export class SortComponent {
   protected readonly COLOURS = COLOURS;
 
   protected readonly restartRequested = signal(false);
+  protected readonly showSpotifyPlayer = signal(true);
+  public toggleSpotifyPlayer() {
+    this.showSpotifyPlayer.update((x) => !x);
+  }
 
   public constructor() {
     this.sortingService.randomiseSeed();
