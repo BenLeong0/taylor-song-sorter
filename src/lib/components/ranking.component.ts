@@ -4,7 +4,6 @@ import { Component, input } from "@angular/core";
 
 @Component({
   selector: "app-ranking",
-  standalone: true,
   imports: [CommonModule],
   template: `
     <table class="border-collapse text-16">

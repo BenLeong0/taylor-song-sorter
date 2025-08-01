@@ -11,7 +11,6 @@ import { SortingV1Service, type Selection } from "../sorting-v1.service";
 
 @Component({
   selector: "app-sort",
-  standalone: true,
   imports: [CommonModule, Menu, Ranking, Settings],
   templateUrl: "./sort.component.html",
 })

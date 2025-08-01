@@ -2,7 +2,9 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "$lib/*": ["./src/lib/*"]
+      "$lib/*": [
+        "./src/lib/*"
+      ]
     },
     "outDir": "./dist/out-tsc",
     "strict": true,
@@ -15,12 +17,15 @@
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
-    "lib": ["ES2023", "dom"]
+    "lib": [
+      "ES2023",
+      "dom"
+    ]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

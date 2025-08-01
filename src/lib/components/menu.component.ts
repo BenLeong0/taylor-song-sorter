@@ -3,7 +3,6 @@ import { Component, EventEmitter, Output, model } from "@angular/core";
 
 @Component({
   selector: "app-menu",
-  standalone: true,
   imports: [CommonModule],
   template: `
     <div class="flex flex-row gap-[5px] text-16">

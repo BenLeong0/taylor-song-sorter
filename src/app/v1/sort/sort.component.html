@@ -1,3 +1,5 @@
+@let started = sortingService.started();
+
 <div
   class="font-serif h-full w-full max-w-[1000px] mx-auto mt-40 flex justify-end items-center"
 >
@@ -14,11 +16,9 @@
           [(restartRequested)]="restartRequested"
         />
         <app-ranking [ranking]="sortResult.ranking" />
-        <app-menu
-          *ngIf="sortingService.started()"
-          (undo)="undo()"
-          (restart)="confirmRestart()"
-        />
+        @if (started) {
+          <app-menu (undo)="undo()" (restart)="confirmRestart()" />
+        }
       } @else {
         <div class="text-12 mb-10 text-center">
           dear reader: try to avoid using the middle options, as overuse will
@@ -70,24 +70,26 @@
             </p>
           </div>
         </div>
-        <app-menu
-          *ngIf="sortingService.started()"
-          (undo)="undo()"
-          (restart)="confirmRestart()"
-          [(restartRequested)]="restartRequested"
-        />
-        <app-settings
-          *ngIf="!sortingService.started()"
-          (byAlbum)="sortingService.selectSortType('byAlbum')"
-          (randomise)="sortingService.selectSortType('random')"
-        />
-        <div
-          *ngIf="SHOW_RANDOM_RANKING_OPTION"
-          class="w-[150px] cursor-pointer select-none hover:underline text-16"
-          (click)="sortingService.fillHistory()"
-        >
-          generate fake ranking
-        </div>
+        @if (started) {
+          <app-menu
+            (undo)="undo()"
+            (restart)="confirmRestart()"
+            [(restartRequested)]="restartRequested"
+          />
+        } @else {
+          <app-settings
+            (byAlbum)="sortingService.selectSortType('byAlbum')"
+            (randomise)="sortingService.selectSortType('random')"
+          />
+        }
+        @if (SHOW_RANDOM_RANKING_OPTION) {
+          <div
+            class="w-[150px] cursor-pointer select-none hover:underline text-16"
+            (click)="sortingService.fillHistory()"
+          >
+            generate fake ranking
+          </div>
+        }
 
         <!-- <div class="flex flex-col gap-[4px] mt-10">
           <iframe
