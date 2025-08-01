@@ -3,7 +3,6 @@ import { Component, EventEmitter, Output } from "@angular/core";
 
 @Component({
   selector: "app-settings",
-  standalone: true,
   imports: [CommonModule],
   template: `
     <div class="text-16 text-center font-extrabold mb-5">ranking order</div>
