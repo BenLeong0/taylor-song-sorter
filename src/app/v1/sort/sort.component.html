@@ -84,31 +84,40 @@
         }
         @if (SHOW_RANDOM_RANKING_OPTION) {
           <div
-            class="w-[150px] cursor-pointer select-none hover:underline text-16"
+            class="cursor-pointer select-none hover:underline text-16"
             (click)="sortingService.fillHistory()"
           >
             generate fake ranking
           </div>
         }
 
-        <!-- <div class="flex flex-col gap-[4px] mt-10">
-          <iframe
-            [src]="getSpotifyLink(sortResult.options[0])"
-            width="300"
-            height="80"
-            frameborder="0"
-            allowtransparency="true"
-            allow="encrypted-media"
-          ></iframe>
-          <iframe
-            [src]="getSpotifyLink(sortResult.options[1])"
-            width="300"
-            height="80"
-            frameborder="0"
-            allowtransparency="true"
-            allow="encrypted-media"
-          ></iframe>
-        </div> -->
+        <div
+          class="cursor-pointer select-none hover:underline text-16"
+          (click)="toggleSpotifyPlayer()"
+        >
+          {{ showSpotifyPlayer() ? "hide" : "show" }} spotify player
+        </div>
+
+        @if (showSpotifyPlayer()) {
+          <div class="flex flex-col gap-[4px] mt-10">
+            <iframe
+              [src]="getSpotifyLink(sortResult.options[0])"
+              width="300"
+              height="80"
+              frameborder="0"
+              allowtransparency="true"
+              allow="encrypted-media"
+            ></iframe>
+            <iframe
+              [src]="getSpotifyLink(sortResult.options[1])"
+              width="300"
+              height="80"
+              frameborder="0"
+              allowtransparency="true"
+              allow="encrypted-media"
+            ></iframe>
+          </div>
+        }
       }
     }
   </div>
