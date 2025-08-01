@@ -1,15 +1,16 @@
 import { Routes } from "@angular/router";
+import { v1Routes } from "./v1/v1.routes";
 
-export const LATEST_VERSION = "v1";
+export const LATEST_ROUTES = v1Routes;
 
 export const routes: Routes = [
   {
     path: "",
     pathMatch: "full",
-    redirectTo: LATEST_VERSION,
+    children: LATEST_ROUTES,
   },
   {
     path: "v1",
-    loadChildren: () => import("./v1/v1.routes").then((m) => m.v1Routes),
+    children: v1Routes,
   },
 ];
