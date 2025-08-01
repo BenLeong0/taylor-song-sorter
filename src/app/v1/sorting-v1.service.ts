@@ -35,10 +35,10 @@ export class SortingV1Service {
   /* History */
   private readonly history = signal<Selection[]>([]);
   public readonly numDecisionsMade = computed<number>(
-    () => this.history().length
+    () => this.history().length,
   );
   public readonly started = computed<boolean>(
-    () => this.numDecisionsMade() > 0
+    () => this.numDecisionsMade() > 0,
   );
 
   /* Actions */
@@ -225,15 +225,15 @@ export class SortingV1Service {
     }
 
     const albumLengths = ALBUMS.map(
-      (album) => SONGS.filter((song) => song.album === album).length
+      (album) => SONGS.filter((song) => song.album === album).length,
     );
     const part1 = sum(
-      albumLengths.map((length) => length * Math.ceil(Math.log2(length)))
+      albumLengths.map((length) => length * Math.ceil(Math.log2(length))),
     );
 
     const pairings = getBinaryPairings(ALBUMS.length);
     const part2 = sum(
-      [...pairings].map(({ l, r }) => sum(albumLengths.slice(l, r)))
+      [...pairings].map(({ l, r }) => sum(albumLengths.slice(l, r))),
     );
 
     return part1 + part2;

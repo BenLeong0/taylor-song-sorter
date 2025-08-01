@@ -10,9 +10,9 @@ import { COLOURS, type SongEntry } from "../songs-v1";
 import { SortingV1Service, type Selection } from "../sorting-v1.service";
 
 @Component({
-    selector: "app-sort",
-    imports: [CommonModule, Menu, Ranking, Settings],
-    templateUrl: "./sort.component.html"
+  selector: "app-sort",
+  imports: [CommonModule, Menu, Ranking, Settings],
+  templateUrl: "./sort.component.html",
 })
 export class SortComponent {
   public log = console.log;

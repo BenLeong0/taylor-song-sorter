@@ -3,9 +3,9 @@ import { CommonModule } from "@angular/common";
 import { Component, input } from "@angular/core";
 
 @Component({
-    selector: "app-ranking",
-    imports: [CommonModule],
-    template: `
+  selector: "app-ranking",
+  imports: [CommonModule],
+  template: `
     <table class="border-collapse text-16">
       <tr class="font-bold text-center">
         <td class="border border-black py-[4px] px-[6px]">Rank</td>
@@ -22,7 +22,7 @@ import { Component, input } from "@angular/core";
         </tr>
       }
     </table>
-  `
+  `,
 })
 export class Ranking {
   public readonly ranking = input.required<SongResult[]>();
