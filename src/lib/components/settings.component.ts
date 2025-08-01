@@ -2,10 +2,9 @@ import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Output } from "@angular/core";
 
 @Component({
-  selector: "app-settings",
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: "app-settings",
+    imports: [CommonModule],
+    template: `
     <div class="text-16 text-center font-extrabold mb-5">ranking order</div>
     <div class="text-16 flex flex-row gap-[5px]">
       <div
@@ -22,7 +21,7 @@ import { Component, EventEmitter, Output } from "@angular/core";
         randomised order
       </div>
     </div>
-  `,
+  `
 })
 export class Settings {
   @Output() public randomise = new EventEmitter<void>();

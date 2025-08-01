@@ -2,10 +2,9 @@ import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Output, model } from "@angular/core";
 
 @Component({
-  selector: "app-menu",
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: "app-menu",
+    imports: [CommonModule],
+    template: `
     <div class="flex flex-row gap-[5px] text-16">
       <div
         class="w-[150px] cursor-pointer select-none text-right hover:underline"
@@ -30,7 +29,7 @@ import { Component, EventEmitter, Output, model } from "@angular/core";
         </div>
       }
     </div>
-  `,
+  `
 })
 export class Menu {
   @Output() public undo = new EventEmitter<void>();
