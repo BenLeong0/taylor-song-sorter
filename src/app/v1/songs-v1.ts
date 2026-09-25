@@ -13,6 +13,7 @@ export const ALBUMS = [
   "evermore",
   "Midnights",
   "The Tortured Poets Department",
+  "The Life of a Showgirl",
 ] as const;
 export type Album = (typeof ALBUMS)[number];
 
@@ -29,6 +30,7 @@ export const COLOURS: Record<Album, string> = {
   evermore: "#C5AC90",
   Midnights: "#242E47",
   "The Tortured Poets Department": "#231E1A",
+  "The Life of a Showgirl": "#E8793A",
 } as const;
 
 export type SongEntry = {
@@ -1225,5 +1227,85 @@ export const SONGS: SongEntry[] = [
     title: "The Manuscript",
     album: "The Tortured Poets Department",
     spotifyId: "1DTRUYVd8rYpla9hhVVwjo",
+  },
+  {
+    title: "The Fate of Ophelia",
+    album: "The Life of a Showgirl",
+    spotifyId: "53iuhJlwXhSER5J2IYYv1W",
+  },
+  {
+    title: "Elizabeth Taylor",
+    album: "The Life of a Showgirl",
+    spotifyId: "1jgTiNob5cVyXeJ3WgX5bL",
+  },
+  {
+    title: "Opalite",
+    album: "The Life of a Showgirl",
+    spotifyId: "3yWuTOYDztXjZxdE2cIRUa",
+  },
+  {
+    title: "Father Figure",
+    album: "The Life of a Showgirl",
+    spotifyId: "03bTIHJElXZ0O0jqOQvAbY",
+  },
+  {
+    title: "Eldest Daughter",
+    album: "The Life of a Showgirl",
+    spotifyId: "62HoDY1Km6lm47haFpUn9c",
+  },
+  {
+    title: "Ruin The Friendship",
+    album: "The Life of a Showgirl",
+    spotifyId: "62V2ZHslgQV98gH4AuVXnr",
+  },
+  {
+    title: "Actually Romantic",
+    album: "The Life of a Showgirl",
+    spotifyId: "2x3mwb96B6TquRqMtbxUE1",
+  },
+  {
+    title: "Wi$h Li$t",
+    album: "The Life of a Showgirl",
+    spotifyId: "2TEQvxxQabwLQMqWMg1qGu",
+  },
+  {
+    title: "Wood",
+    album: "The Life of a Showgirl",
+    spotifyId: "5ylJtmaWPJ33cW3En7WOu0",
+  },
+  {
+    title: "CANCELLED!",
+    album: "The Life of a Showgirl",
+    spotifyId: "1appZ3c336FkPvCuywfmrs",
+  },
+  {
+    title: "Honey",
+    album: "The Life of a Showgirl",
+    spotifyId: "4qmFC3Jz5aQ0erlk2OSi2X",
+  },
+  {
+    title: "The Life of a Showgirl",
+    album: "The Life of a Showgirl",
+    spotifyId: "5eXgqtg3T8Av0m1FUaGHex",
+  },
+  {
+    title: "Patient Zero",
+    album: "The Life of a Showgirl",
+    spotifyId: "1bZbknDAYUVMf3w9qNONJb",
+  },
+  {
+    title: "Cleveland!",
+    album: "The Life of a Showgirl",
+    spotifyId: "4S6EQ0C00EwfcFWm4Pd1mt",
+  },
+  {
+    title: "Pink Clouding",
+    album: "The Life of a Showgirl",
+    spotifyId: "4ZQ3orBO9Bxd7Q4kTZ7LHC",
+  },
+  {
+    title: "Babylon",
+    album: "The Life of a Showgirl",
+    spotifyId: "72KeCPed2lFqZhbzTwszJs",
   },
 ];
