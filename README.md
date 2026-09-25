@@ -1,6 +1,6 @@
 # Taylor Swift Song Sorter
 
-Access here: https://benleong0.github.io/taylor-song-sorter/
+Access here: https://tswift.benleong.uk/
 
 ## To-do
 
