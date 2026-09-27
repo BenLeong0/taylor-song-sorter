@@ -2,7 +2,6 @@
 
 export const ALBUMS = [
   "Taylor Swift",
-  "Beautiful Eyes",
   "Fearless",
   "Speak Now",
   "Red",
@@ -110,18 +109,6 @@ export const SONGS: SongEntry[] = [
     title: "A Perfectly Good Heart",
     album: "Taylor Swift",
     spotifyId: "0YgHuReCSPwTXYny7isLja",
-  },
-  {
-    title: "Beautiful Eyes",
-    album: "Beautiful Eyes",
-    spotifyId: "0PNawBovWZQtuAl9Q9UXrp",
-    spotifyIsPodcast: true,
-  },
-  {
-    title: "I Heart ?",
-    album: "Beautiful Eyes",
-    spotifyId: "7xxDGCQF4QwnXiH8nW0sqd",
-    spotifyIsPodcast: true,
   },
   {
     title: "Fearless",
