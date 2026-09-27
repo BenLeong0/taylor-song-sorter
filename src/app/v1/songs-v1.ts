@@ -600,11 +600,6 @@ export const SONGS: SongEntry[] = [
     spotifyId: "6IG3sQ8s9nfk6TUlVzRhbN",
   },
   {
-    title: "Sweeter Than Fiction",
-    album: "1989",
-    spotifyId: "0RFCHlNuTeUHIB36VuVbOL",
-  },
-  {
     title: "Bad Blood (Remix)",
     album: "1989",
     spotifyId: "6qAcApH8obo8eqatCKUHd9",
