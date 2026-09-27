@@ -18,7 +18,6 @@ export type Album = (typeof ALBUMS)[number];
 
 export const COLOURS: Record<Album, string> = {
   "Taylor Swift": "#A5C9A5",
-  "Beautiful Eyes": "#D9C13A",
   Fearless: "#EFC180",
   "Speak Now": "#C7A8CB",
   Red: "#7A2E39",
